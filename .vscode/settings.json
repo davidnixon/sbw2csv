@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "doc-sbw.h": "c",
+        "stdio.h": "c"
+    }
+}
