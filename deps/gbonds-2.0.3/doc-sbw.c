@@ -60,7 +60,7 @@ gb_doc_sbw_open(const gchar *filename,
 	fp = fopen(filename, "r");
 	if (fp == NULL)
 	{
-		printf("Cannot open \"%s\"", filename);
+		g_message("Cannot open \"%s\"", filename);
 		*status = GB_ERROR_OPEN_SBW_CANNOT_OPEN_FILE;
 		return NULL;
 	}
@@ -89,15 +89,15 @@ gb_doc_sbw_open(const gchar *filename,
 	switch (version)
 	{
 	case 2:
-		printf("Importing SBW 2 or 3 file");
+		g_message("Importing SBW 2 or 3 file");
 		doc = read_sbw2(fp, status);
 		break;
 	case 4:
-		printf("Importing SBW 4 file");
+		g_message("Importing SBW 4 file");
 		doc = read_sbw4(fp, status);
 		break;
 	default:
-		printf("Problem parsing SBW file, bad magic number.");
+		g_warning("Problem parsing SBW file, bad magic number.");
 		*status = GB_ERROR_OPEN_SBW_BAD_MAGIC;
 	}
 
@@ -128,7 +128,7 @@ read_sbw2(FILE *fp, gbStatus *status)
 	if ((strncmp("\"SBW 2\"", line, 7) != 0) &&
 		(strncmp("\"SBW 3\"", line, 7) != 0))
 	{
-		printf("Problem parsing SBW file, bad magic number.");
+		g_warning("Problem parsing SBW file, bad magic number.");
 		*status = GB_ERROR_OPEN_SBW_BAD_MAGIC;
 		g_object_unref(G_OBJECT(doc));
 		return NULL;
@@ -143,7 +143,7 @@ read_sbw2(FILE *fp, gbStatus *status)
 	fgets(line, 256, fp); /* N */
 	if (sscanf(line, "%d", &n) != 1 /* Line should contain only 1 field */)
 	{
-		printf("Problem parsing SBW file, line 4 should have N.");
+		g_warning("Problem parsing SBW file, line 4 should have N.");
 		*status = GB_ERROR_OPEN_SBW_PARSE;
 		g_object_unref(G_OBJECT(doc));
 		return NULL;
@@ -168,7 +168,7 @@ read_sbw2(FILE *fp, gbStatus *status)
 		g_strfreev(field);
 		if (*status != GB_OK)
 		{
-			printf("Cannot create bond, status = %d", *status);
+			g_warning("Cannot create bond, status = %d", *status);
 			g_object_unref(G_OBJECT(doc));
 			return NULL;
 		}
@@ -177,7 +177,7 @@ read_sbw2(FILE *fp, gbStatus *status)
 		if (*status != GB_OK)
 		{
 			gb_doc_bond_free(p_bond);
-			printf("Cannot add bond to list, status = %d", *status);
+			g_warning("Cannot add bond to list, status = %d", *status);
 			g_object_unref(G_OBJECT(doc));
 			return NULL;
 		}
@@ -210,39 +210,51 @@ read_sbw4(FILE *fp, gbStatus *status)
 
 	gb_doc_set_title(doc, "Imported SBW4 Inventory");
 
+	size_t loc;
+
 	fread(&head, sizeof(SBW4_Head), 1, fp);
+	loc = ftell(fp);
 	fread(cbond, SBW4_CBOND_SIZE, 1, fp);
 	n = head.n_bonds;
+	loc = ftell(fp);
 
 	for (i = 0; i < n; i++)
 	{
-
 		fread(&info_fixed, sizeof(SBW4_BondInfoFixed), 1, fp);
+		loc = ftell(fp);
 
 		fread(&n_bytes, sizeof(guchar), 1, fp);
+		loc = ftell(fp);
 		if (n_bytes > 0)
 		{
 			fread(notes, n_bytes, 1, fp);
+			loc = ftell(fp);
+
 			notes[n_bytes] = 0;
 		}
 
 		fread(&n_bytes, sizeof(guchar), 1, fp);
+		loc = ftell(fp);
 		if (n_bytes > 0)
 		{
 			fread(sn, n_bytes, 1, fp);
+			loc = ftell(fp);
 			sn[n_bytes] = 0;
 		}
 
 		fread(&n_bytes, sizeof(guchar), 1, fp);
+		loc = ftell(fp);
 		if (n_bytes > 0)
 		{
 			fread(series, n_bytes, 1, fp);
+			loc = ftell(fp);
 			series[n_bytes] = 0;
 		}
 
 		if (i < (n - 1))
 		{
 			fread(&inter_record, sizeof(gshort), 1, fp);
+			loc = ftell(fp);
 		}
 
 		if ((strcasecmp("E", series) == 0) || (strcasecmp("S", series) == 0) || (strcasecmp("EE", series) == 0) || (strcasecmp("I", series) == 0))
@@ -257,7 +269,7 @@ read_sbw4(FILE *fp, gbStatus *status)
 			g_free(idate_string);
 			if (*status != GB_OK)
 			{
-				printf("Cannot create bond, status = %d", *status);
+				g_message("Cannot create bond, status = %d", *status);
 				g_object_unref(G_OBJECT(doc));
 				return NULL;
 			}
@@ -274,7 +286,7 @@ read_sbw4(FILE *fp, gbStatus *status)
 		}
 		else
 		{
-			printf("Skipping unsupported bond series (%s)", series);
+			g_warning("Skipping unsupported bond series (%s)", series);
 		}
 	}
 

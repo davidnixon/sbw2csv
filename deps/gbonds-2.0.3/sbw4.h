@@ -25,41 +25,43 @@
 
 #include "types.h"
 
-#define SBW4_EPOCH GB_DATE(APR,1941)
+#define SBW4_EPOCH GB_DATE(APR, 1941)
 
-typedef struct {
-	short rdate;
-	short dummy1;
-	short n_bonds;
-	short dummy3;
-	short dummy4;
-	short dummy5;
+typedef struct
+{
+	guint16 rdate;
+	guint16 dummy1;
+	guint16 n_bonds;
+	guint16 dummy3;
+	guint16 dummy4;
+	guint16 dummy5;
 } SBW4_Head;
 
 #define SBW4_CBOND_SIZE 5
 
-typedef struct {
-	long dummy0;
-	long dummy1;
-	long dummy2;
-	long dummy3;
-	long dummy4;
-	long dummy5;
-	long denom;
-	long mdate;
-	long dummy8;
-	long dummy9;
-	long idate;
-	long dummy11;
-	long dummy12;
-	long adate;
-	long dummy14;
-	long dummy15;
-	long dummy16;
-	long dummy17;
-	long dummy18;
-	long dummy19;
-	long dummy20;
+typedef struct __attribute__((packed))
+{
+	guint32 dummy0;	 //00 00 00 00
+	guint32 dummy1;	 // d7 43
+	guint32 dummy2;	 //0 0 0 0
+	guint32 dummy3;	 // 0 0 10 40
+	guint32 dummy4;	 // 0 0 0 0
+	guint32 dummy5;	 // 0 0 0 0
+	guint32 denom;	 // 64 0 0 0
+	guint32 mdate;	 //c9 03 0 0
+	guint32 dummy8;	 //0 0 0 0
+	guint32 dummy9;	 //ae 07 . .
+	guint32 idate;	 //61 02 0 0
+	guint32 dummy11; // 0 0 0 0
+	guint32 dummy12; //0 0 49 40
+	guint32 adate;	 //93 03 0 0
+	guint32 dummy14; //ff ff ff ff
+	guint32 dummy15; //0 0 0 0
+	guint32 dummy16; //0 0 0 0
+	guint32 dummy17; //0 0 0 40
+	guint32 dummy18; //0a d7 . .
+	guint32 dummy19; //0 0 0 0
+	guint32 dummy20; //58 8f . .
 } SBW4_BondInfoFixed;
 
 #endif /* __SBW4_H__ */

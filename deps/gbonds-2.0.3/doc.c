@@ -143,7 +143,7 @@ gb_doc_class_init(gbDocClass *klass)
 static void
 gb_doc_instance_init(gbDoc *doc)
 {
-	doc->private = g_new0(gbDocPrivate, 1);
+	doc->_private = g_new0(gbDocPrivate, 1);
 }
 
 static void
@@ -163,9 +163,9 @@ gb_doc_finalize(GObject *object)
 	}
 	g_list_free(doc->list);
 
-	g_free(doc->private->title);
-	g_free(doc->private->filename);
-	g_free(doc->private);
+	g_free(doc->_private->title);
+	g_free(doc->_private->filename);
+	g_free(doc->_private);
 
 	G_OBJECT_CLASS(parent_class)->finalize(object);
 }
@@ -177,7 +177,7 @@ gb_doc_new(void)
 
 	doc = g_object_new(gb_doc_get_type(), NULL);
 
-	doc->private->modified_flag = FALSE;
+	doc->_private->modified_flag = FALSE;
 
 	return G_OBJECT(doc);
 }
@@ -188,7 +188,7 @@ gb_doc_new(void)
 gchar *
 gb_doc_get_filename(gbDoc *doc)
 {
-	return g_strdup(doc->private->filename);
+	return g_strdup(doc->_private->filename);
 }
 
 /****************************************************************************/
@@ -197,22 +197,22 @@ gb_doc_get_filename(gbDoc *doc)
 gchar *
 gb_doc_get_short_name(gbDoc *doc)
 {
-	if (doc->private->filename == NULL)
+	if (doc->_private->filename == NULL)
 	{
 
-		if (doc->private->untitled_instance == 0)
+		if (doc->_private->untitled_instance == 0)
 		{
-			doc->private->untitled_instance = ++untitled;
+			doc->_private->untitled_instance = ++untitled;
 		}
 
 		return g_strdup_printf("%s %d", ("Untitled"),
-							   doc->private->untitled_instance);
+							   doc->_private->untitled_instance);
 	}
 	else
 	{
 		gchar *temp_name, *short_name;
 
-		temp_name = g_path_get_basename(doc->private->filename);
+		temp_name = g_path_get_basename(doc->_private->filename);
 		short_name = gb_util_remove_extension(temp_name);
 		g_free(temp_name);
 
@@ -226,7 +226,7 @@ gb_doc_get_short_name(gbDoc *doc)
 gboolean
 gb_doc_is_modified(gbDoc *doc)
 {
-	return doc->private->modified_flag;
+	return doc->_private->modified_flag;
 }
 
 /****************************************************************************/
@@ -235,7 +235,7 @@ gb_doc_is_modified(gbDoc *doc)
 gboolean
 gb_doc_is_untitled(gbDoc *doc)
 {
-	return (doc->private->filename == NULL);
+	return (doc->_private->filename == NULL);
 }
 
 /****************************************************************************/
@@ -262,7 +262,7 @@ gb_doc_can_redo(gbDoc *doc)
 void gb_doc_set_filename(gbDoc *doc,
 						 const gchar *filename)
 {
-	doc->private->filename = g_strdup(filename);
+	doc->_private->filename = g_strdup(filename);
 
 	g_signal_emit(G_OBJECT(doc), signals[NAME_CHANGED], 0);
 }
@@ -273,10 +273,10 @@ void gb_doc_set_filename(gbDoc *doc,
 void gb_doc_clear_modified(gbDoc *doc)
 {
 
-	if (doc->private->modified_flag)
+	if (doc->_private->modified_flag)
 	{
 
-		doc->private->modified_flag = FALSE;
+		doc->_private->modified_flag = FALSE;
 
 		g_signal_emit(G_OBJECT(doc), signals[MODIFIED_CHANGED], 0);
 	}
@@ -316,9 +316,9 @@ gb_doc_add_bond(gbDoc *doc,
 
 	g_signal_emit(G_OBJECT(doc), signals[CHANGED], 0);
 
-	if (!doc->private->modified_flag)
+	if (!doc->_private->modified_flag)
 	{
-		doc->private->modified_flag = TRUE;
+		doc->_private->modified_flag = TRUE;
 		g_signal_emit(G_OBJECT(doc), signals[MODIFIED_CHANGED], 0);
 	}
 
@@ -372,9 +372,9 @@ gb_doc_delete_bond(gbDoc *doc,
 
 		g_signal_emit(G_OBJECT(doc), signals[CHANGED], 0);
 
-		if (!doc->private->modified_flag)
+		if (!doc->_private->modified_flag)
 		{
-			doc->private->modified_flag = TRUE;
+			doc->_private->modified_flag = TRUE;
 			g_signal_emit(G_OBJECT(doc), signals[MODIFIED_CHANGED], 0);
 		}
 	}
@@ -393,7 +393,7 @@ gb_doc_delete_bond(gbDoc *doc,
 gchar *
 gb_doc_get_title(gbDoc *doc)
 {
-	return g_strdup(doc->private->title);
+	return g_strdup(doc->_private->title);
 }
 
 /****************************************************************************/
@@ -402,16 +402,16 @@ gb_doc_get_title(gbDoc *doc)
 void gb_doc_set_title(gbDoc *doc,
 					  const gchar *title)
 {
-	g_free(doc->private->title);
-	doc->private->title = g_strdup(title);
+	g_free(doc->_private->title);
+	doc->_private->title = g_strdup(title);
 
 	g_signal_emit(G_OBJECT(doc), signals[CHANGED], 0);
 
 	g_signal_emit(G_OBJECT(doc), signals[NAME_CHANGED], 0);
 
-	if (!doc->private->modified_flag)
+	if (!doc->_private->modified_flag)
 	{
-		doc->private->modified_flag = TRUE;
+		doc->_private->modified_flag = TRUE;
 		g_signal_emit(G_OBJECT(doc), signals[MODIFIED_CHANGED], 0);
 	}
 }

@@ -93,7 +93,7 @@ struct _gbDoc
 
   GList *list; /* List of gbBonds */
 
-  gbDocPrivate *private;
+  gbDocPrivate *_private;
 };
 
 struct _gbDocClass
