@@ -20,92 +20,71 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  */
 
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "util.h"
 
 /****************************************************************************/
 /* Append ".gbonds" extension to filename if needed.                        */
 /****************************************************************************/
-gchar *
-gb_util_add_extension(const gchar *orig_filename)
-{
-	gchar *new_filename, *extension;
+gchar *gb_util_add_extension(const gchar *orig_filename) {
+  gchar *new_filename, *extension;
 
-	extension = strrchr(orig_filename, '.');
-	if (extension == NULL)
-	{
-		new_filename = g_strconcat(orig_filename, ".gbonds", NULL);
-	}
-	else
-	{
-		if (g_ascii_strcasecmp(extension, ".gbonds") != 0)
-		{
-			new_filename =
-				g_strconcat(orig_filename, ".gbonds", NULL);
-		}
-		else
-		{
-			new_filename = g_strdup(orig_filename);
-		}
-	}
+  extension = strrchr(orig_filename, '.');
+  if (extension == NULL) {
+    new_filename = g_strconcat(orig_filename, ".gbonds", NULL);
+  } else {
+    if (g_ascii_strcasecmp(extension, ".gbonds") != 0) {
+      new_filename = g_strconcat(orig_filename, ".gbonds", NULL);
+    } else {
+      new_filename = g_strdup(orig_filename);
+    }
+  }
 
-	return new_filename;
+  return new_filename;
 }
 
 /****************************************************************************/
 /* Remove ".gbonds" extension from filename if needed.                      */
 /****************************************************************************/
-gchar *
-gb_util_remove_extension(const gchar *orig_filename)
-{
-	gchar *new_filename, *extension;
+gchar *gb_util_remove_extension(const gchar *orig_filename) {
+  gchar *new_filename, *extension;
 
-	new_filename = g_strdup(orig_filename);
+  new_filename = g_strdup(orig_filename);
 
-	extension = strrchr(new_filename, '.');
-	if (extension != NULL)
-	{
-		if (g_ascii_strcasecmp(extension, ".gbonds") == 0)
-		{
-			*extension = 0; /* truncate string, rm extension */
-		}
-	}
+  extension = strrchr(new_filename, '.');
+  if (extension != NULL) {
+    if (g_ascii_strcasecmp(extension, ".gbonds") == 0) {
+      *extension = 0; /* truncate string, rm extension */
+    }
+  }
 
-	return new_filename;
+  return new_filename;
 }
 
 /****************************************************************************/
 /* Make sure we have an absolute path to filename.                          */
 /****************************************************************************/
-gchar *
-gb_util_make_absolute(const gchar *filename)
-{
-	gchar *pwd, *absolute_filename;
+gchar *gb_util_make_absolute(const gchar *filename) {
+  gchar *pwd, *absolute_filename;
 
-	if (g_path_is_absolute(filename))
-	{
-		absolute_filename = g_strdup(filename);
-	}
-	else
-	{
-		pwd = g_get_current_dir();
-		absolute_filename =
-			g_strjoin(G_DIR_SEPARATOR_S, pwd, filename, NULL);
-		g_free(pwd);
-	}
+  if (g_path_is_absolute(filename)) {
+    absolute_filename = g_strdup(filename);
+  } else {
+    pwd = g_get_current_dir();
+    absolute_filename = g_strjoin(G_DIR_SEPARATOR_S, pwd, filename, NULL);
+    g_free(pwd);
+  }
 
-	return absolute_filename;
+  return absolute_filename;
 }
 
 /****************************************************************************/
 /* Get '~/.gbonds' directory path.                                          */
 /****************************************************************************/
-gchar *
-gb_util_get_home_data_dir(void)
-{
-	gchar *dir = getenv("HOME");
+gchar *gb_util_get_home_data_dir(void) {
+  gchar *dir = getenv("HOME");
 
-	return dir;
+  return dir;
 }

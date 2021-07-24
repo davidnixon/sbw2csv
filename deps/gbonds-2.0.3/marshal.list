@@ -1,9 +1,5 @@
-VOID:VOID
-VOID:BOOLEAN
-VOID:INT
-VOID:INT,INT
-VOID:INT,DOUBLE
-VOID:DOUBLE
-VOID:DOUBLE,DOUBLE
-VOID:STRING
-BOOLEAN:OBJECT
+VOID : VOID VOID : BOOLEAN VOID : INT VOID : INT,
+                                             INT VOID : INT,
+                                                        DOUBLE VOID
+    : DOUBLE VOID : DOUBLE,
+                    DOUBLE VOID : STRING BOOLEAN : OBJECT

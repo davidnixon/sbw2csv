@@ -26,8 +26,7 @@
 
 G_BEGIN_DECLS
 
-extern gbDoc *gb_doc_sbw_open(const gchar *filename,
-							  gbStatus *status);
+extern gbDoc *gb_doc_sbw_open(const gchar *filename, gbStatus *status);
 
 G_END_DECLS
 

@@ -24,13 +24,6 @@
 
 static gbTableModel *model;
 
-gbTableModel *
-gb_table_get_model(void)
-{
-	return model;
-}
+gbTableModel *gb_table_get_model(void) { return model; }
 
-void gb_table_init(void)
-{
-	model = GB_TABLE_MODEL(gb_table_model_new());
-}
+void gb_table_init(void) { model = GB_TABLE_MODEL(gb_table_model_new()); }

@@ -27,45 +27,29 @@
 
 G_BEGIN_DECLS
 
-gbStatus  gb_rules_test_series_denom           (gbSeries  series,
-						gdouble   denom );
+gbStatus gb_rules_test_series_denom(gbSeries series, gdouble denom);
 
-gbStatus  gb_rules_test_issue                  (gbSeries  series,
-						gbDate    idate );
+gbStatus gb_rules_test_issue(gbSeries series, gbDate idate);
 
-gbStatus  gb_rules_determine_issue             (gbSeries  series,
-						gdouble   denom,
-						gdouble  *issue);
+gbStatus gb_rules_determine_issue(gbSeries series, gdouble denom,
+                                  gdouble *issue);
 
-gbStatus  gb_rules_determine_maturity          (gbSeries  series,
-						gbDate    idate,
-						gbDate   *mdate);
+gbStatus gb_rules_determine_maturity(gbSeries series, gbDate idate,
+                                     gbDate *mdate);
 
-gbStatus  gb_rules_get_last_accrual            (gbSeries  series,
-						gbDate    idate,
-						gbDate    rdate,
-						gbDate    mdate,
-						gbDate   *a1date);
+gbStatus gb_rules_get_last_accrual(gbSeries series, gbDate idate, gbDate rdate,
+                                   gbDate mdate, gbDate *a1date);
 
-gbStatus  gb_rules_get_next_accrual            (gbSeries  series,
-						gbDate    idate,
-						gbDate    rdate,
-						gbDate    mdate,
-						gbDate   *a2date);
+gbStatus gb_rules_get_next_accrual(gbSeries series, gbDate idate, gbDate rdate,
+                                   gbDate mdate, gbDate *a2date);
 
-gbStatus  gb_rules_determine_exchangeability   (gbSeries  series,
-						gbDate    idate,
-						gbDate    mdate,
-						gbDate    rdate,
-						gboolean *exchangeable_flag);
+gbStatus gb_rules_determine_exchangeability(gbSeries series, gbDate idate,
+                                            gbDate mdate, gbDate rdate,
+                                            gboolean *exchangeable_flag);
 
-gbStatus  gb_rules_determine_nopay             (gbSeries  series,
-						gbDate    idate,
-						gbDate    rdate,
-						gboolean *nopay_flag);
+gbStatus gb_rules_determine_nopay(gbSeries series, gbDate idate, gbDate rdate,
+                                  gboolean *nopay_flag);
 
 G_END_DECLS
 
 #endif /* __RULES_H__ */
-
-

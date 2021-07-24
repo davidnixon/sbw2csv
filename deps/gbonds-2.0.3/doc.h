@@ -22,8 +22,8 @@
 #ifndef __DOC_H__
 #define __DOC_H__
 
-#include <glib-object.h>
 #include "types.h"
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -34,8 +34,7 @@ G_BEGIN_DECLS
 /*------------------------*/
 /* Basic bond structure   */
 /*------------------------*/
-typedef struct
-{
+typedef struct {
 
   gchar *sn;       /* Serial Number */
   gbSeries series; /* Series (see gbSeries) */
@@ -49,8 +48,7 @@ typedef struct
 /*------------------------------*/
 /* Bond information structure   */
 /*------------------------------*/
-typedef struct
-{
+typedef struct {
   gchar *sn;
   gchar *series;
   gdouble denom;
@@ -78,7 +76,8 @@ typedef struct
 /*------------------------*/
 #define GB_TYPE_DOC (gb_doc_get_type())
 #define GB_DOC(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), GB_TYPE_DOC, gbDoc))
-#define GB_DOC_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST((klass), GB_TYPE_DOC, gbDocClass))
+#define GB_DOC_CLASS(klass)                                                    \
+  (G_TYPE_CHECK_CLASS_CAST((klass), GB_TYPE_DOC, gbDocClass))
 #define GB_IS_DOC(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), GB_TYPE_DOC))
 #define GB_IS_DOC_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), GB_TYPE_DOC))
 
@@ -87,8 +86,7 @@ typedef struct _gbDocClass gbDocClass;
 
 typedef struct _gbDocPrivate gbDocPrivate;
 
-struct _gbDoc
-{
+struct _gbDoc {
   GObject object;
 
   GList *list; /* List of gbBonds */
@@ -96,8 +94,7 @@ struct _gbDoc
   gbDocPrivate *_private;
 };
 
-struct _gbDocClass
-{
+struct _gbDocClass {
   GObjectClass parent_class;
 
   void (*changed)(gbDoc *doc, gpointer user_data);
@@ -127,38 +124,29 @@ gboolean gb_doc_can_undo(gbDoc *doc);
 
 gboolean gb_doc_can_redo(gbDoc *doc);
 
-void gb_doc_set_filename(gbDoc *doc,
-                         const gchar *filename);
+void gb_doc_set_filename(gbDoc *doc, const gchar *filename);
 
 void gb_doc_clear_modified(gbDoc *doc);
 
-gbStatus gb_doc_add_bond(gbDoc *doc,
-                         gbDocBond *p_bond);
+gbStatus gb_doc_add_bond(gbDoc *doc, gbDocBond *p_bond);
 
-gbStatus gb_doc_delete_bond(gbDoc *doc,
-                            gbDocBond *p_bond);
+gbStatus gb_doc_delete_bond(gbDoc *doc, gbDocBond *p_bond);
 
 gchar *gb_doc_get_title(gbDoc *doc);
 
-void gb_doc_set_title(gbDoc *doc,
-                      const gchar *title);
+void gb_doc_set_title(gbDoc *doc, const gchar *title);
 
 /* Creating and freeing bonds */
-gbDocBond *gb_doc_bond_new(gchar *series,
-                           const gchar *idate,
-                           gdouble denom,
-                           const gchar *sn,
-                           gbStatus *status);
+gbDocBond *gb_doc_bond_new(gchar *series, const gchar *idate, gdouble denom,
+                           const gchar *sn, gbStatus *status);
 
-gbDocBond *gb_doc_bond_new_from_sn_idate(gchar *sn,
-                                         const gchar *idate,
+gbDocBond *gb_doc_bond_new_from_sn_idate(gchar *sn, const gchar *idate,
                                          gbStatus *status);
 
 void gb_doc_bond_free(gbDocBond *p_bond);
 
 /* Extracting current information from bond */
-gbDocBondInfo *gb_doc_bond_get_info(gbDocBond *p_bond,
-                                    const gchar *rdate,
+gbDocBondInfo *gb_doc_bond_get_info(gbDocBond *p_bond, const gchar *rdate,
                                     gbStatus *status);
 
 void gb_doc_bond_free_info(gbDocBondInfo *info);

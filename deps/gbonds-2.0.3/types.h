@@ -32,8 +32,7 @@
 /*---------------------*/
 /* Bond series         */
 /*---------------------*/
-typedef enum
-{
+typedef enum {
   GB_SERIES_E,
   GB_SERIES_S,
   GB_SERIES_EE,
@@ -68,8 +67,7 @@ typedef gint gbDate; /* Year*12 + (Month-1) */
 /*------------------------------------------------*/
 /* Standard status codes, when dealing with bonds */
 /*------------------------------------------------*/
-typedef enum
-{
+typedef enum {
   GB_OK = 0,
 
   GB_ERROR_MEM_ALLOC = -10,
@@ -116,32 +114,24 @@ typedef enum
 /* Function Prototypes                                                   */
 /*=======================================================================*/
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-  extern const gchar *
-  gb_series_fmt(gbSeries series);
+extern const gchar *gb_series_fmt(gbSeries series);
 
-  extern gchar *
-  gb_date_fmt(gbDate date);
+extern gchar *gb_date_fmt(gbDate date);
 
-  extern gchar *
-  gb_value_fmt(gdouble value, gboolean cent_flag);
+extern gchar *gb_value_fmt(gdouble value, gboolean cent_flag);
 
-  extern gbStatus
-  gb_serial_number_parse(gchar *sn, gbSeries *series, gdouble *denom);
+extern gbStatus gb_serial_number_parse(gchar *sn, gbSeries *series,
+                                       gdouble *denom);
 
-  extern gbStatus
-  gb_series_parse(gchar *string, gbSeries *series);
+extern gbStatus gb_series_parse(gchar *string, gbSeries *series);
 
-  extern gbStatus
-  gb_date_parse(const gchar *string, gbDate *date);
+extern gbStatus gb_date_parse(const gchar *string, gbDate *date);
 
-  extern gbStatus
-  gb_determine_yield(gdouble issue_price, gdouble value,
-                     gbDate idate, gbDate adate,
-                     gdouble *yield);
+extern gbStatus gb_determine_yield(gdouble issue_price, gdouble value,
+                                   gbDate idate, gbDate adate, gdouble *yield);
 
 #ifdef __cplusplus
 }

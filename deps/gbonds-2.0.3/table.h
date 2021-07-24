@@ -24,10 +24,8 @@
 
 #include "table-model.h"
 
+gbTableModel *gb_table_get_model(void);
 
-gbTableModel *gb_table_get_model (void);
-
-void          gb_table_init      (void);
+void gb_table_init(void);
 
 #endif /*__TABLE_H__*/
-
