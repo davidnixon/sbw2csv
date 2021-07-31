@@ -1,0 +1,23 @@
+// Feature flags
+$feature-flags: (
+  grid-columns-16: true,
+);
+$css--font-face: true;
+$css--plex: true;
+
+@import './theme';
+
+// Global styles
+@import 'carbon-components/scss/globals/scss/css--font-face';
+@import 'carbon-components/scss/globals/grid/grid';
+@import '@carbon/type/scss/classes';
+
+// Carbon components
+@import 'carbon-components/scss/components/ui-shell/ui-shell';
+@import 'carbon-components/scss/components/button/button';
+@import 'carbon-components/scss/components/tile/tile';
+@import 'carbon-components/scss/components/notification/toast-notification';
+@import 'carbon-components/scss/components/link/link';
+@import 'carbon-components/scss/components/file-uploader/file-uploader';
+
+@import './carbon-fixes';

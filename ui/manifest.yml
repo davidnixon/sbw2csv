@@ -1,0 +1,6 @@
+---
+applications:
+  - name: sbw2csv
+    memory: 256M
+    buildpacks:
+      - https://github.com/cloudfoundry/nginx-buildpack
