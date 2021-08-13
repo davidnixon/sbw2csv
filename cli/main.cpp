@@ -1,6 +1,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <map>
+#include <fstream>
 
 #include "deps/gbonds-2.0.3/doc-sbw.h"
 #include "deps/gbonds-2.0.3/types.h"
@@ -39,10 +40,27 @@ int main(int argc, char *argv[])
     return 1;
   }
 
+  // write to a file or stdout if an output file has not been defined
+  std::ofstream of;
+  std::ostream output(nullptr);
+  if (vm.count("output"))
+  {
+    cout << vm["output"].as<string>() << endl;
+    of.open(vm["output"].as<string>(), std::ios::out | std::ios::trunc);
+    output.rdbuf(of.rdbuf());
+  }
+  else
+  {
+    output.rdbuf(std::cout.rdbuf());
+  }
+
   // print header
-  cout << "SERIES,DENOMINATION,PURCHASE PRICE,SERIAL NUMBER,ISSUE "
-          "DATE,MATURITY DATE"
-       << endl;
+  output << "SERIES,DENOMINATION,PURCHASE PRICE,SERIAL NUMBER,ISSUE "
+            "DATE,MATURITY DATE"
+         << endl;
+
+  // Loop trough the input file and conver each one. Try to be tolerant of errors
+  // or bad files.
   for (auto sbwfile : vm["input"].as<vector<string>>())
   {
     try
@@ -59,19 +77,26 @@ int main(int argc, char *argv[])
       for (l = g_list_first(doc->list); l != nullptr; l = g_list_next(l))
       {
         bond = static_cast<gbDocBond *>(l->data);
-        cout << gb_series_fmt(bond->series) << ",";
-        cout << bond->denom << ",";
-        cout << bond->issue << ",";
-        cout << bond->sn << ",";
-        cout << gb_date_fmt(bond->idate) << ",";
-        cout << gb_date_fmt(bond->mdate);
-        cout << endl;
+        output << gb_series_fmt(bond->series) << ",";
+        output << bond->denom << ",";
+        output << bond->issue << ",";
+        output << bond->sn << ",";
+        output << gb_date_fmt(bond->idate) << ",";
+        output << gb_date_fmt(bond->mdate);
+        output << endl;
       }
     }
     catch (const std::exception &e)
     {
       std::cerr << "ERROR: " << e.what() << '\n';
     }
+  }
+
+  // close the output file if it exists
+  if (of.is_open())
+  {
+    output.flush();
+    of.close();
   }
 
   return 0;

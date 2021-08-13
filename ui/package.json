@@ -1,7 +1,9 @@
 {
-  "name": "sbw2csv",
-  "version": "0.1.0",
-  "private": true,
+  "name": "sbw2csv-ui",
+  "version": "1.0.0",
+  "description": "UI layer for sbw2csv app",
+  "private": false,
+  "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -17,6 +19,7 @@
     "@carbon/vue": "^2.39.0",
     "core-js": "^3.16.0",
     "lottie-vuejs": "^0.4.0",
+    "superagent": "^6.1.0",
     "vue": "^2.6.14",
     "vue-router": "^3.5.2"
   },

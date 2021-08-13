@@ -3,3 +3,7 @@ build/
 webbuild/
 **/.vscode/launch
 .~lock*
+.env.development
+node_modules
+ui/bin/
+ui/services/
