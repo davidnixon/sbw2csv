@@ -1,4 +1,5 @@
-require("dotenv").config();
+require("dotenv-flow").config();
+const cloudDB = require("./lib/database.js");
 const express = require("express");
 const { exec } = require("child_process");
 const multer = require("multer");
@@ -14,6 +15,7 @@ const port = process.env.SERVICES_PORT || 3000;
 const SBW2CSV = process.env.SBW2CSV || "./bin/sbw2csv";
 
 app.use("/converted", express.static(path.join(__dirname, "converted")));
+app.use(express.json());
 
 app.post("/convert", upload.array("sbwFiles", 12), (req, res) => {
   req.files.forEach((element) => {
@@ -42,6 +44,21 @@ app.post("/convert", upload.array("sbwFiles", 12), (req, res) => {
       return res.status(200).send({ ok: true, message: relative });
     }
   );
+});
+
+app.post("/analytics", function (req, res) {
+  const doc = req.body;
+  doc._id = `analytics:${uuidv4()}`;
+  console.log(doc);
+  var database = cloudDB.db.use(cloudDB.dbNames.sbw2csv);
+  database
+    .insert(doc)
+    .then((response) => {
+      return res.status(200).send({ ok: true });
+    })
+    .catch((err) => {
+      return res.status(500).send({ ok: false, err: err });
+    });
 });
 
 app.listen(port, () => {

@@ -12,12 +12,14 @@
     "serve": "nodemon index.js"
   },
   "dependencies": {
-    "dotenv": "^10.0.0",
+    "@cloudant/cloudant": "^4.4.1",
+    "dotenv-flow": "^3.2.0",
     "express": "^4.17.1",
     "multer": "^1.4.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "nano": "^9.0.3",
     "nodemon": "^2.0.12"
   }
 }

@@ -1,0 +1,32 @@
+{
+  "name": "sbw2csv-dev-database",
+  "version": "v1.0.0",
+  "description": "Local database - development only",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "serve": "node index.js",
+    "rebuild": "node scripts/rebuild.js",
+    "restart": "node scripts/stopdb.js && node index.js",
+    "factory-reset": "node scripts/factory-reset.js && node scripts/rebuild.js",
+    "connect": "scripts/test_connection.sh",
+    "test": "mocha",
+    "ci-check": "prettier --list-different \"**/*.{js,json}\"",
+    "ci-format": "prettier --write \"**/*.{js,json}\""
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 100
+  },
+  "devDependencies": {
+    "chai": "^4.3.0",
+    "mocha": "^8.3.0",
+    "prettier": "^2.2.1"
+  },
+  "engines": {
+    "yarn": ">= 1.22",
+    "npm": "please-use-yarn",
+    "node": "12.x"
+  }
+}

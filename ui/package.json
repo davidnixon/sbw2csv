@@ -20,6 +20,7 @@
     "core-js": "^3.16.0",
     "lottie-vuejs": "^0.4.0",
     "superagent": "^6.1.0",
+    "uuid": "^8.3.2",
     "vue": "^2.6.14",
     "vue-router": "^3.5.2"
   },

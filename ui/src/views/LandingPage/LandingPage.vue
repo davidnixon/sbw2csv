@@ -36,6 +36,13 @@
         </div>
       </cv-column>
       <cv-column :sm="4" :md="8" :lg="6">
+        <cv-inline-notification
+          v-if="currentSize > maxSize"
+          kind="error"
+          :title="tooBig"
+          :sub-title="invalidTotalSize"
+        >
+        </cv-inline-notification>
         <cv-file-uploader
           :label="label"
           :helperText="helperText"
@@ -45,8 +52,8 @@
           :initial-state-uploading="initialStateUploading"
           :multiple="multiple"
           :removable="removable"
+          @change="actionChange"
           v-model="sbwFiles"
-          ref="fileUploader"
         >
         </cv-file-uploader>
         <cv-button
@@ -80,6 +87,8 @@
 <script>
 import { Upload32, Csv20, Download16 } from '@carbon/icons-vue';
 import agent from 'superagent';
+import { v4 } from 'uuid';
+import analytics from '@/api/analytics';
 
 export default {
   name: 'LandingPage',
@@ -99,31 +108,90 @@ export default {
     uploadIcon: Upload32,
     sbwFiles: [],
     downloadLink: '',
+    browserId: '',
+    maxSize: 20 * 1024,
+    currentSize: 0,
+    invalidSize: 'Upload limit is 100K. This file is too big.',
+    tooBig: 'Upload limit is 100K',
+    invalidTotalSize: 'These files are too big. Remove some before uploading',
   }),
+  created() {
+    this.browserId = sessionStorage.getItem('browserId');
+    if (!this.browserId) {
+      this.browserId = v4();
+      sessionStorage.setItem('browserId', this.browserId);
+    }
+    analytics.add(
+      {
+        name: 'page-visit',
+        data: this.$route.name,
+        browserId: this.browserId,
+      },
+      navigator
+    );
+  },
   computed: {
     disabledUpload() {
-      return false;
+      var ready = this.sbwFiles.find((item) => item.state == '');
+      var tooBig = this.currentSize > this.maxSize;
+      return tooBig || !ready;
     },
   },
-  created() {},
   methods: {
-    actionUpload() {
-      console.log('upload');
+    actionChange(val) {
+      analytics.add(
+        {
+          name: 'file-added',
+          data: { size: val.slice(-1)[0].file.size },
+          browserId: this.browserId,
+        },
+        navigator
+      );
+      var done = this.sbwFiles.findIndex((item) => item.state != '');
+      while (done > -1) {
+        this.sbwFiles.splice(done, 1);
+        done = this.sbwFiles.findIndex((item) => item.state != '');
+      }
+      this.currentSize = 0;
       this.sbwFiles.forEach((element) => {
-        console.log('element', element);
+        if (element.file.size > this.maxSize) {
+          element.invalidMessage = 'too big';
+          element.state = 'error';
+        } else this.currentSize += element.file.size;
       });
+    },
+    actionUpload() {
+      analytics.add(
+        {
+          name: 'upload',
+          data: { count: this.sbwFiles.length },
+          browserId: this.browserId,
+        },
+        navigator
+      );
+
+      this.downloadLink = '';
 
       var convert = agent.post('/services/convert');
       this.sbwFiles.forEach((element) => {
-        convert.attach('sbwFiles', element.file);
+        if (element.state == '') {
+          element.state = 'uploading';
+          convert.attach('sbwFiles', element.file);
+        }
       });
 
       convert
         .then((response) => {
-          console.log(response.body);
+          // console.log(response.body);
           this.downloadLink = '/services/' + response.body.message;
+          this.sbwFiles.forEach((element) => {
+            element.state = 'complete';
+          });
         })
         .catch((err) => {
+          this.sbwFiles.forEach((element) => {
+            element.state = 'error';
+          });
           console.error(err);
         });
     },

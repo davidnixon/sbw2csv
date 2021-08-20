@@ -4,3 +4,9 @@ applications:
     memory: 256M
     buildpacks:
       - https://github.com/cloudfoundry/nginx-buildpack
+
+    # node Exress services deployed as sidecar
+    sidecars:
+      - name: services
+        process_types: ['web']
+        command: yarn start

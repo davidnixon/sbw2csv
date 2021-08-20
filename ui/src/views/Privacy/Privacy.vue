@@ -215,8 +215,29 @@
 </template>
 
 <script>
+import agent from 'superagent';
+import lodash from 'lodash';
+import { v4 } from 'uuid';
+import analytics from '@/api/analytics';
+
 export default {
   name: 'Privacy',
+
+  created() {
+    this.browserId = sessionStorage.getItem('browserId');
+    if (!this.browserId) {
+      this.browserId = v4();
+      sessionStorage.setItem('browserId', this.browserId);
+    }
+    analytics.add(
+      {
+        pageVisit: this.$route.name,
+        browserId: this.browserId,
+      },
+      navigator
+    );
+  },
+  methods: {},
 };
 </script>
 
