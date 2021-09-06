@@ -108,6 +108,7 @@ export default {
     uploadIcon: Upload32,
     sbwFiles: [],
     downloadLink: '',
+    downloadPrefix: '/download/',
     browserId: '',
     maxSize: 20 * 1024,
     currentSize: 0,
@@ -116,6 +117,8 @@ export default {
     invalidTotalSize: 'These files are too big. Remove some before uploading',
   }),
   created() {
+    if (process.env.NODE_ENV !== 'production')
+      this.downloadPrefix = '/services/';
     this.browserId = sessionStorage.getItem('browserId');
     if (!this.browserId) {
       this.browserId = v4();
@@ -183,7 +186,7 @@ export default {
       convert
         .then((response) => {
           // console.log(response.body);
-          this.downloadLink = '/services/' + response.body.message;
+          this.downloadLink = `${this.downloadPrefix}${response.body.message}`;
           this.sbwFiles.forEach((element) => {
             element.state = 'complete';
           });

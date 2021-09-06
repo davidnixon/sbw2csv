@@ -1,0 +1,3 @@
+C++ Logo - Jeremy Kratz, Public domain, via Wikimedia Commons
+node logo - node.js authors, Public domain, via Wikimedia Commons
+Vue logo - Evan You, https://github.com/yyx990803, CC BY 4.0 <https://creativecommons.org/licenses/by/4.0>, via Wikimedia Commons

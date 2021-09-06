@@ -7,3 +7,8 @@ webbuild/
 node_modules
 ui/bin/
 ui/services/
+expressjs-openwhisk/
+.env.local
+*.csv
+*.sbw
+*.xlsx

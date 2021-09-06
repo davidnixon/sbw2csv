@@ -2,20 +2,34 @@
   "name": "sbw2csv-services",
   "version": "1.0.0",
   "description": "services layer for sbw2csv app",
-  "main": "index.js",
+  "main": "action.js",
   "repository": "https://github.com/davidnixon/sbw2csv",
   "author": "David Nixon",
   "license": "MIT",
   "private": false,
+  "engines": {
+    "node": "12",
+    "yarn": "^1.22.0",
+    "npm": "please-use-yarn"
+  },
   "scripts": {
-    "start": "node index.js",
-    "serve": "nodemon index.js"
+    "start": "node ./bin/www",
+    "serve": "nodemon ./bin/www"
   },
   "dependencies": {
-    "@cloudant/cloudant": "^4.4.1",
+    "@ibm-cloud/cloudant": "^0.0.18",
+    "async": "^3.2.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
     "dotenv-flow": "^3.2.0",
-    "express": "^4.17.1",
+    "express": "~4.17.1",
+    "expressjs-openwhisk": "https://github.com/davidnixon/expressjs-openwhisk.git",
+    "http-errors": "~1.6.3",
+    "ibm-cos-sdk": "^1.10.2",
+    "morgan": "~1.9.1",
     "multer": "^1.4.3",
+    "node-shred": "^1.1.0",
+    "pug": "2.0.0-beta11",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

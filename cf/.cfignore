@@ -1,0 +1,7 @@
+babel.config.js
+.env*
+.git*
+*.md
+src
+.vscode
+vue.config.js

@@ -6,14 +6,21 @@
 #include "deps/gbonds-2.0.3/doc-sbw.h"
 #include "deps/gbonds-2.0.3/types.h"
 
+constexpr char version[] = "1.0.0";
+
 using namespace std;
 namespace po = boost::program_options;
 
 int main(int argc, char *argv[])
 {
   po::options_description desc("Allowed options");
-  desc.add_options()("help", "produce help message")(
-      "output,o", po::value<string>(), "output file")("input,i", po::value<vector<string>>()->required(), "input files");
+  // clang-format off
+  desc.add_options()
+      ("help", "produce help message")
+      ("version", "show version and exit")
+      ("output,o", po::value<string>(), "output file")
+      ("input,i", po::value<vector<string>>()->required(), "input files");
+  // clang-format on
   po::positional_options_description p;
   p.add("input", -1);
 
@@ -27,6 +34,12 @@ int main(int argc, char *argv[])
     if (vm.count("help"))
     {
       std::cout << "usage: " << desc << std::endl;
+      return 0;
+    }
+
+    if (vm.count("version"))
+    {
+      std::cout << "sbw2csv version: " << version << std::endl;
       return 0;
     }
 

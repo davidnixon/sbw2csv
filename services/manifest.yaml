@@ -1,0 +1,27 @@
+packages:
+  sbw2csv:
+    version: 1.0
+    license: MIT
+    actions:
+      sbw2csvServices:
+        version: 1.0
+        function: app.zip
+        runtime: nodejs:12
+        annotations:
+          web-export: true
+          raw-http: true
+        limits:
+          concurrentActivations: 1
+        inputs:
+          DEBUG:
+            value: services:server
+            description: logging options see https://www.npmjs.com/package/debug
+          NODE_DB_PREFIX:
+            value: prod_
+            description: Which sb2csv database to use
+          COS_ENDPOINT:
+            value: s3.private.us-east.cloud-object-storage.appdomain.cloud
+            description: choose the proper endpoint for your COS
+          COS_BUCKET:
+            value: sbw2csv
+            description: choose a bucket name in your COS
