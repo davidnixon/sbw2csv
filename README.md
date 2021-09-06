@@ -180,3 +180,50 @@ ibmcloud cf set-env COS_DOWNLOAD YOUR-PUBLIC-DOWNLOAD-URL
 ibmcloud cf set-env SERVICES_URL YOUR-ACTION-URL
 ibmcloud cf start sbw2csv
 ```
+
+## Development setup
+
+pre-reqs
+
+- [yarn](https://classic.yarnpkg.com/en/docs/install/)
+- [nvm](https://github.com/nvm-sh/nvm)
+- node 12 `nvm install 12`
+- [docker](https://docs.docker.com/get-docker/)
+  - podman on RedHat works too
+- [cmake](https://cmake.org/install/)
+- [gcc](https://linuxize.com/post/how-to-install-gcc-on-ubuntu-20-04/)
+- [boost](https://www.boost.org/doc/libs/1_77_0/more/getting_started/unix-variants.html)
+
+- start database - open a new terminal
+
+  ```sh
+  cd database
+  yarn
+  yarn serve # this takes a few minutes
+  ```
+
+- build the sbw2csv cli
+
+  ```sh
+  cd cli
+  cmake -S . -Bbuild/
+  cmake --build build/
+  cp build/sbw2csv ../services/bin/
+  ```
+
+- start services - open a new terminal
+
+  ```sh
+  cd services
+  yarn
+  yarn serve
+  ```
+
+  **NOTE**: If you want your local environment to connect to a remote COS, add your \_\_bx_creds to a `.env.json` file and restart your services.
+
+- start UI - open a new terminal
+  ```sh
+  cd ui
+  yarn
+  yarn serve
+  ```

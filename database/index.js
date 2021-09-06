@@ -20,7 +20,7 @@ exec('docker ps --quiet --filter label=sbw2csv-dev/db=' + package.version)
 
   .then((data) => {
     if (data.stdout === '') {
-      // Build the right version if it is not alrready available
+      // Build the right version if it is not already available
       console.log(`building sbw2csv-dev/db:${package.version} ...`)
       return exec('bash scripts/build_image.sh ' + package.version, { cwd: __dirname })
     } else {

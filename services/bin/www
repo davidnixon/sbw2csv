@@ -5,10 +5,13 @@
  */
 require("dotenv-flow").config();
 if (process.env.NODE_ENV !== "production") {
-  const env_json = require("../.env.json");
-  for (const [key, value] of Object.entries(env_json)) {
-    if (typeof value != "string") process.env[key] = JSON.stringify(value);
-    else process.env[key] = value;
+  const fs = require("fs");
+  if (fs.existsSync(__dirname + "/../.env.json")) {
+    const env_json = require("../.env.json");
+    for (const [key, value] of Object.entries(env_json)) {
+      if (typeof value != "string") process.env[key] = JSON.stringify(value);
+      else process.env[key] = value;
+    }
   }
 }
 var app = require("../app");

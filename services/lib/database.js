@@ -1,12 +1,14 @@
 const debug = require("debug")("services:server");
 const CloudantV1 = require("@ibm-cloud/cloudant").CloudantV1;
 
-const bx_creds = JSON.parse(process.env.__bx_creds);
-if (!bx_creds) throw new Error("Missing __bx_creds parameter.");
-const cloudant_creds = bx_creds["cloudantnosqldb"];
-if (cloudant_creds) {
-  process.env.CLOUDANT_URL = cloudant_creds.url;
-  process.env.CLOUDANT_APIKEY = cloudant_creds.apikey;
+if (process.env.__bx_creds) {
+  const bx_creds = JSON.parse(process.env.__bx_creds);
+  if (!bx_creds) throw new Error("Missing __bx_creds parameter.");
+  const cloudant_creds = bx_creds["cloudantnosqldb"];
+  if (cloudant_creds) {
+    process.env.CLOUDANT_URL = cloudant_creds.url;
+    process.env.CLOUDANT_APIKEY = cloudant_creds.apikey;
+  }
 }
 
 const dbPrefix = process.env.NODE_DB_PREFIX || "local_";

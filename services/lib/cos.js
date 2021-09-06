@@ -5,43 +5,55 @@ const fs = require("fs");
 const async = require("async");
 const fsPromises = require("fs").promises;
 
-const bx_creds = JSON.parse(process.env.__bx_creds);
-if (!bx_creds) throw new Error("Missing __bx_creds parameter.");
+var cos = null;
+var bucket = null;
 
-const cos_creds = bx_creds["cloud-object-storage"];
-if (!cos_creds) throw new Error("Missing cloud-object-storage parameter.");
+if (process.env.__bx_creds) {
+  const bx_creds = JSON.parse(process.env.__bx_creds);
+  if (!bx_creds) throw new Error("Missing __bx_creds parameter.");
 
-const endpoint = process.env.COS_ENDPOINT;
-if (!endpoint) throw new Error("Missing COS_ENDPOINT parameter.");
+  const cos_creds = bx_creds["cloud-object-storage"];
+  if (!cos_creds) throw new Error("Missing cloud-object-storage parameter.");
 
-const bucket = process.env.COS_BUCKET;
-if (!bucket) throw new Error("Missing COS_BUCKET parameter.");
+  const endpoint = process.env.COS_ENDPOINT;
+  if (!endpoint) throw new Error("Missing COS_ENDPOINT parameter.");
 
-const config = {
-  endpoint: endpoint,
-  apiKeyId: cos_creds.apikey,
-  serviceInstanceId: cos_creds.resource_instance_id,
-};
+  bucket = process.env.COS_BUCKET;
+  if (!bucket) throw new Error("Missing COS_BUCKET parameter.");
 
-const cos = new COS.S3(config);
+  const config = {
+    endpoint: endpoint,
+    apiKeyId: cos_creds.apikey,
+    serviceInstanceId: cos_creds.resource_instance_id,
+  };
 
-cos
-  .listBuckets()
-  .promise()
-  .then((data) => {
-    if (data.Buckets != null) {
-      for (var i = 0; i < data.Buckets.length; i++) {
-        debug(
-          `Bucket Name: ${data.Buckets[i].Name} using:${
-            bucket === data.Buckets[i].Name
-          }`
-        );
+  cos = new COS.S3(config);
+
+  cos
+    .listBuckets()
+    .promise()
+    .then((data) => {
+      if (data.Buckets != null) {
+        for (var i = 0; i < data.Buckets.length; i++) {
+          debug(
+            `Bucket Name: ${data.Buckets[i].Name} using:${
+              bucket === data.Buckets[i].Name
+            }`
+          );
+        }
       }
-    }
-  })
-  .catch((e) => {
-    console.error(`ERROR: ${e.code} - ${e.message}\n`);
+    })
+    .catch((e) => {
+      console.error(`ERROR: ${e.code} - ${e.message}\n`);
+    });
+}
+
+function noUpload(itemName, filePath) {
+  return Promise.resolve({
+    ok: false,
+    message: `cos not connected. ${itemName} not uploaded`,
   });
+}
 
 function uploadFile(itemName, filePath) {
   info(`Creating new item: ${itemName}`);
@@ -172,5 +184,5 @@ function cancelMultiPartUpload(bucket, itemName, uploadID) {
 module.exports = {
   service: cos,
   bucket: bucket,
-  upload: uploadFile,
+  upload: cos ? uploadFile : noUpload,
 };

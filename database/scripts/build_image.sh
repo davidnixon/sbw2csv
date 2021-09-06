@@ -16,7 +16,7 @@ if [ -z "$CLOUDANT_AUTH_TYPE" ] || [ -z "$CLOUDANT_URL" ] || [ -z "$CLOUDANT_USE
   echo CLOUDANT_URL=http://localhost:8888 >> ../services/.env.local
 
   CLOUDANT_USERNAME=$(date +%N | base64 | sed 's/[+/=]//g'| head -c 8)
-  echo CLOUDANT_USERNAME=$CLOUDANT_USERNAME > ../services/.env.local
+  echo CLOUDANT_USERNAME=$CLOUDANT_USERNAME >> ../services/.env.local
 
   CLOUDANT_PASSWORD=$(date +%N | base64 | sed 's/[+/=]//g' | head -c 20)
   echo CLOUDANT_PASSWORD=$CLOUDANT_PASSWORD >> ../services/.env.local
