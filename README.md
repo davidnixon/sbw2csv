@@ -178,8 +178,8 @@ ibmcloud functions service bind cloudantnosqldb sbw2csv/sbw2csvServices --instan
 ```sh
 cd build/cf
 ibmcloud cf push --no-start
-ibmcloud cf set-env COS_DOWNLOAD YOUR-PUBLIC-DOWNLOAD-URL
-ibmcloud cf set-env SERVICES_URL YOUR-ACTION-URL
+ibmcloud cf set-env sbw2csv COS_DOWNLOAD YOUR-PUBLIC-DOWNLOAD-URL
+ibmcloud cf set-env sbw2csv SERVICES_URL YOUR-ACTION-URL
 ibmcloud cf start sbw2csv
 ```
 
