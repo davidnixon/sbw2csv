@@ -79,8 +79,8 @@ ibmcloud functions service bind cloud-object-storage \
 
 
 ibmcloud functions service bind cloudantnosqldb \
-    sbw2csv/sbw2csvServices 
-    --instance YOUR-CLOUDANT-INSTANCE 
+    sbw2csv/sbw2csvServices \
+    --instance YOUR-CLOUDANT-INSTANCE \
     --keyname sbw2csv-service
 ```
 
