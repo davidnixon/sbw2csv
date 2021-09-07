@@ -61,12 +61,9 @@ That works great for me on Ubunto 20 but likely needs updats for OSX and Windows
 You can see most of this in the [build.sh](build.sh) but these are basic steps:
 
 ```sh
-cd services
-yarn --ignore-optional --production
-cd ../cli
 docker run --rm -v $(pwd):/app/sbwcli sbw2csv-builder:latest
 cp webbuild/sbw2csv ../services/bin
-cd ../services
+# ..
 zip -r app.zip .
 ibmcloud functions deploy
 ```
@@ -75,11 +72,16 @@ The function expects to be connected to a COS instance and to a Cloudant instanc
 cloud account to generate write access keys for these services and then connect them to the Actions.
 
 ```sh
-ibmcloud functions service bind cloud-object-storage sbw2csv/sbw2csvServices --instance YOUR-COS-INSTANCE --keyname sbw2csv-service
+ibmcloud functions service bind cloud-object-storage \
+    sbw2csv/sbw2csvServices \
+    --instance YOUR-COS-INSTANCE \
+    --keyname sbw2csv-service
 
 
-ibmcloud functions service bind cloudantnosqldb sbw2csv/sbw2csvServices --instance YOUR-CLOUDANT-INSTANCE --keyname sbw2csv-service
-
+ibmcloud functions service bind cloudantnosqldb \
+    sbw2csv/sbw2csvServices 
+    --instance YOUR-CLOUDANT-INSTANCE 
+    --keyname sbw2csv-service
 ```
 
 The action uses the parameter `COS_ENDPOINT` to find the COS endpoint so make sure that it defined correctly for your environment. You can see in the manifest file that it defaults to the private endpoint for us-east so the private endpoint for your region should work for you.
