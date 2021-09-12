@@ -126,6 +126,12 @@ There is a local build script that prepares everything for deployment. You can f
 
 That script builds the services, cli, and UI and prepares them for deployment. The build output is written to `build`.
 
+Make sure you have the docker image for running the CLI build.
+```sh
+cd cli
+docker build . -t sbw2csv-builder:latest
+```
+
 ```sh
 ./build.sh
 ```
