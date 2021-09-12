@@ -17,23 +17,22 @@
     "serve": "nodemon ./bin/www"
   },
   "dependencies": {
-    "@ibm-cloud/cloudant": "^0.0.18",
+    "@ibm-cloud/cloudant": "^0.0.19",
     "async": "^3.2.1",
     "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
+    "debug": "~4.3.2",
     "dotenv-flow": "^3.2.0",
     "express": "~4.17.1",
     "expressjs-openwhisk": "https://github.com/davidnixon/expressjs-openwhisk.git",
-    "http-errors": "~1.6.3",
+    "http-errors": "~1.8.0",
     "ibm-cos-sdk": "^1.10.2",
-    "morgan": "~1.9.1",
+    "morgan": "~1.10.0",
     "multer": "^1.4.3",
     "node-shred": "^1.1.0",
-    "pug": "2.0.0-beta11",
+    "pug": "3.0.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "nano": "^9.0.3",
     "nodemon": "^2.0.12"
   }
 }
