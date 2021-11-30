@@ -48,13 +48,15 @@ Then the only trick is to compile it so that it is compatible with the stack run
 
 Incidentally, you can build the command line utility locally like this:
 
+
+**Build**
 ```sh
 cd cli
 cmake -S . -Bbuild
 cmake --build build/
 ```
 
-That works great for me on Ubunto 20 but likely needs updats for OSX and Windows. LMK if you make changes and I'll merge them in.
+That works great for me on Ubuntu 20 but likely needs updates for OSX and Windows. LMK if you make changes and I'll merge them in.
 
 ### Deploying the Services
 
@@ -197,11 +199,14 @@ pre-reqs
 - [nvm](https://github.com/nvm-sh/nvm)
 - node 12 `nvm install 12`
 - [docker](https://docs.docker.com/get-docker/)
-  - podman on RedHat works too
+  - podman on Fedora or RedHat works too
 - [cmake](https://cmake.org/install/)
 - [gcc](https://linuxize.com/post/how-to-install-gcc-on-ubuntu-20-04/)
 - [boost](https://www.boost.org/doc/libs/1_77_0/more/getting_started/unix-variants.html)
-
+    ** Fedora**
+    ```sh
+    sudo dnf install cmake boost-static boost-devel glib-devel libstdc++-devel libstdc++-static
+    ```
 - start database - open a new terminal
 
   ```sh

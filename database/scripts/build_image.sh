@@ -26,4 +26,6 @@ if [ -z "$CLOUDANT_AUTH_TYPE" ] || [ -z "$CLOUDANT_URL" ] || [ -z "$CLOUDANT_USE
 
 fi
 set -x
-docker build --build-arg NODE_DB_USER=$CLOUDANT_USERNAME --build-arg NODE_DB_PASSWORD=$CLOUDANT_PASSWORD -t sbw2csv-dev/db:$1 .
+PODMAN=$(command -v podman)
+COMMAND="${PODMAN:-docker}"
+$COMMAND build --build-arg NODE_DB_USER=$CLOUDANT_USERNAME --build-arg NODE_DB_PASSWORD=$CLOUDANT_PASSWORD -t sbw2csv-dev/db:$1 .

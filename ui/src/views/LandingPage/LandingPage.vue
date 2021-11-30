@@ -70,15 +70,17 @@
     <cv-row>
       <cv-column :sm="4" :md="8" :lg="6">
         <div v-if="downloadLink" class="sbw2csv__dl">
-          <Csv color="#73ca00" />
-          <div class="sbw2csv__dl__label">
-            {{ ready }}
+          <div>
+            <Csv color="#73ca00" />
+            <div class="sbw2csv__dl__label">
+              {{ ready }}
+            </div>
           </div>
+          <cv-link :href="downloadLink" download>
+            {{ download }}
+            <Download16 />
+          </cv-link>
         </div>
-        <cv-link v-if="downloadLink" :href="downloadLink" download>
-          {{ download }}
-          <Download16 />
-        </cv-link>
       </cv-column>
     </cv-row>
   </cv-grid>
@@ -110,7 +112,7 @@ export default {
     downloadLink: '',
     downloadPrefix: '/download/',
     browserId: '',
-    maxSize: 20 * 1024,
+    maxSize: 100 * 1024,
     currentSize: 0,
     invalidSize: 'Upload limit is 100K. This file is too big.',
     tooBig: 'Upload limit is 100K',
@@ -142,6 +144,7 @@ export default {
   },
   methods: {
     actionChange(val) {
+      if (!val.length) return;
       analytics.add(
         {
           name: 'file-added',
@@ -158,7 +161,7 @@ export default {
       this.currentSize = 0;
       this.sbwFiles.forEach((element) => {
         if (element.file.size > this.maxSize) {
-          element.invalidMessage = 'too big';
+          element.invalidMessage = this.invalidSize;
           element.state = 'error';
         } else this.currentSize += element.file.size;
       });
@@ -204,8 +207,19 @@ export default {
 
 <style lang="scss">
 @import '@/styles/theme';
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%) scale(4.5);
+  }
+  to {
+    transform: translateX(0%) scale(1);
+  }
+}
 .sbw2csv {
   &__dl {
+    animation-name: slideIn;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
     &__label {
       @include carbon--type-style('label-01');
       display: inline-block;

@@ -1,0 +1,6 @@
+cli/build
+node_modules
+.gitignore
+manifest.yaml
+action.js
+Dockerfile
