@@ -1,10 +1,19 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var logger = require("morgan");
+const path = require("path");
+const fs = require("fs");
 
-var debug = require("debug")("services:server");
+// local dev helper
+const envLocalJson = path.join(__dirname, ".env.local.json");
+try {
+  const ceEnv = fs.readFileSync(envLocalJson).toString("utf-8");
+  if (ceEnv) process.env.CE_SERVICES = ceEnv;
+} catch (error) {
+  debug(`${envLocalJson} not found`, error);
+}
 
+const createError = require("http-errors");
+const express = require("express");
+const logger = require("morgan");
+const debug = require("debug")("services:server");
 const indexRouter = require("./routes/index");
 const analyticsRouter = require("./routes/analytics");
 const convertRouter = require("./routes/convert");

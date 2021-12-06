@@ -65,8 +65,9 @@
     "typeinfo": "cpp",
     "variant": "cpp"
   },
-  "cmake.sourceDirectory": "${workspaceFolder}/cli",
+  "cmake.sourceDirectory": "${workspaceFolder}/services/cli",
   "cSpell.words": [
+    "apikey",
     "Bbuild",
     "BOOSTPO",
     "buildpack",

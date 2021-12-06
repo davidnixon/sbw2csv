@@ -8,11 +8,11 @@ const fsPromises = require("fs").promises;
 var cos = null;
 var bucket = null;
 
-if (process.env.__bx_creds) {
-  const bx_creds = JSON.parse(process.env.__bx_creds);
-  if (!bx_creds) throw new Error("Missing __bx_creds parameter.");
+if (process.env.CE_SERVICES) {
+  const bx_creds = JSON.parse(process.env.CE_SERVICES);
+  if (!bx_creds) throw new Error("Missing CE_SERVICES.");
 
-  const cos_creds = bx_creds["cloud-object-storage"];
+  const cos_creds = bx_creds["cloud-object-storage"][0];
   if (!cos_creds) throw new Error("Missing cloud-object-storage parameter.");
 
   const endpoint = process.env.COS_ENDPOINT;
@@ -23,8 +23,8 @@ if (process.env.__bx_creds) {
 
   const config = {
     endpoint: endpoint,
-    apiKeyId: cos_creds.apikey,
-    serviceInstanceId: cos_creds.resource_instance_id,
+    apiKeyId: cos_creds.credentials.apikey,
+    serviceInstanceId: cos_creds.credentials.resource_instance_id,
   };
 
   cos = new COS.S3(config);
@@ -46,6 +46,8 @@ if (process.env.__bx_creds) {
     .catch((e) => {
       console.error(`ERROR: ${e.code} - ${e.message}\n`);
     });
+} else {
+  debug("process.env.CE_SERVICES not defined");
 }
 
 function noUpload(itemName, filePath) {
