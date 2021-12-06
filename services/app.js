@@ -1,15 +1,4 @@
 const path = require("path");
-const fs = require("fs");
-
-// local dev helper
-const envLocalJson = path.join(__dirname, ".env.local.json");
-try {
-  const ceEnv = fs.readFileSync(envLocalJson).toString("utf-8");
-  if (ceEnv) process.env.CE_SERVICES = ceEnv;
-} catch (error) {
-  debug(`${envLocalJson} not found`, error);
-}
-
 const createError = require("http-errors");
 const express = require("express");
 const logger = require("morgan");
