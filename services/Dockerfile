@@ -13,4 +13,9 @@ RUN mkdir -p /.npm-global/bin/
 RUN npm install --prefix /.npm-global -g yarn
 RUN export PATH=$PATH:/opt/app-root/src/.npm-global/bin
 COPY . /opt/app-root/src/
-USER default
+RUN yarn
+
+WORKDIR /opt/app-root/src
+RUN chown -R 1001:0 /opt/
+USER 1001
+ENTRYPOINT yarn start
