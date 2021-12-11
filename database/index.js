@@ -10,9 +10,8 @@ try {
 } catch (error) {
   command = execSync('command -v docker').toString('ascii').trim()
 }
-var bCommand = path.basename(command) 
+var bCommand = path.basename(command)
 console.log('command', command)
-
 
 // Is the correct version already running
 exec(`${command} ps --quiet --filter label=sbw2csv-dev/db=${package.version}`)
