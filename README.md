@@ -48,8 +48,8 @@ Then the only trick is to compile it so that it is compatible with the stack run
 
 Incidentally, you can build the command line utility locally like this:
 
-
 **Build**
+
 ```sh
 cd cli
 cmake -S . -Bbuild
@@ -129,6 +129,7 @@ There is a local build script that prepares everything for deployment. You can f
 That script builds the services, cli, and UI and prepares them for deployment. The build output is written to `build`.
 
 Make sure you have the docker image for running the CLI build.
+
 ```sh
 cd cli
 docker build . -t sbw2csv-builder:latest
@@ -179,6 +180,13 @@ ibmcloud functions service bind cloud-object-storage sbw2csv/sbw2csvServices --i
 
 ibmcloud functions service bind cloudantnosqldb sbw2csv/sbw2csvServices --instance YOUR-CLOUDANT-INSTANCE --keyname sbw2csv-service
 
+ibmcloud ce app bind --name sbw2csv-services --service-instance YOUR-COS-INSTANCE
+ibmcloud ce app bind --name sbw2csv-services --service-instance YOUR-CLOUDANT-INSTANCE
+ibmcloud ce app update --name sbw2csv-services \
+  --env COS_ENDPOINT=s3.private.YOUR-END-POINT \
+  --env COS_BUCKET=sbw2csv \
+  --env NODE_DB_PREFIX=prod_ \
+  --env DEBUG="services:server services:cos services:convert" \
 ```
 
 #### Deploy UI
@@ -203,10 +211,10 @@ pre-reqs
 - [cmake](https://cmake.org/install/)
 - [gcc](https://linuxize.com/post/how-to-install-gcc-on-ubuntu-20-04/)
 - [boost](https://www.boost.org/doc/libs/1_77_0/more/getting_started/unix-variants.html)
-    ** Fedora**
-    ```sh
-    sudo dnf install cmake boost-static boost-devel glib-devel libstdc++-devel libstdc++-static
-    ```
+  ** Fedora**
+  ```sh
+  sudo dnf install cmake boost-static boost-devel glib-devel libstdc++-devel libstdc++-static
+  ```
 - start database - open a new terminal
 
   ```sh
