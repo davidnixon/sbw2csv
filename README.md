@@ -197,6 +197,10 @@ ibmcloud cf push --no-start
 ibmcloud cf set-env sbw2csv COS_DOWNLOAD YOUR-PUBLIC-DOWNLOAD-URL
 ibmcloud cf set-env sbw2csv SERVICES_URL YOUR-ACTION-URL
 ibmcloud cf start sbw2csv
+
+ibmcloud ce app update --name sbw2csv-ui \
+  --env SERVICES_URL=https://YOUR-SERVICES-ENDPOINT:3000 \
+  --env COS_DOWNLOAD=YOUR-COS-INSTANCE-PUBLIC-ENDPOINT
 ```
 
 ## Development setup
