@@ -18,4 +18,5 @@ RUN yarn
 WORKDIR /opt/app-root/src
 RUN chown -R 1001:0 /opt/
 USER 1001
+ENV PORT=8080
 ENTRYPOINT yarn start
