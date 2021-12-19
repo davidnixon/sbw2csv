@@ -1,9 +1,7 @@
 FROM registry.access.redhat.com/ubi8/nodejs-14
 USER root
-RUN npm install -g yarn
 COPY . .
 RUN npm install -g yarn &&\
-    npx browserslist@latest --update-db &&\
     yarn install &&\
     yarn build
 

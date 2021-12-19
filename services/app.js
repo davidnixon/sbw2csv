@@ -29,14 +29,15 @@ app.use("/convert", convertRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+  next(createError(404, `Not found: ${req.path}`));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  if (process.env.NODE_ENV === "production") res.locals.error = {};
+  else res.locals.error = err;
 
   // render the error page
   res.status(err.status || 500);
