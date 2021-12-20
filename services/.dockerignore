@@ -1,4 +1,6 @@
 cli/build
+routes/converted/
+routes/uploads/
 node_modules
 .gitignore
 manifest.yaml
