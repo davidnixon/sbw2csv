@@ -1,14 +1,12 @@
 # Convert Your Savings Bond Wizard File to CSV
 
-You can see this code running here: [Convert Your Savings Bond Wizard File](https://sbw2csv.us-east.mybluemix.net/#/)
+You can see this code running here: [Convert Your Savings Bond Wizard File](https://sbw2csv.hefh7w8hsk0.us-south.codeengine.appdomain.cloud/#/)
 
 The US Treasury Department used to have a
 Savings Bond Wizard that let you track and identify the purchased
 bonds. But the SBW file is no longer supported so this app will let you convert them to CSV files.
 
 Thanks to Jim Evins and the [GBonds project](http://gbonds.sourceforge.net/) for the nucleolus of this code.
-
-Thanks to Lionel Villard et al and the [IBM expressjs-openwhisk](https://github.com/IBM/expressjs-openwhisk) project for the inspiration to use Express as an implementation for IBM Functions.
 
 ## How Its Made
 
@@ -28,71 +26,100 @@ yarn serve
 
 ### Deploying the UI
 
-Deployment of the UI is straightforward with just a bit of a reverse proxy incantation to to hide the services and cloud object storage layers.
+You can find the code for this in the [ui](ui) directory.
 
-Deployment starts with `yarn build` which, of course, creates a production version of the app in the `dist` directory. The output is served by Nginx via the [Nginx buildpack](https://github.com/cloudfoundry/nginx-buildpack). You can see the details of that in [cf/manifest.yml](cf/manifest.yml) and [cf/nginx.conf](cf/nginx.conf)
+Deployment of the UI is straightforward with just a bit of a reverse proxy incantation to to hide the services and cloud object storage layers. The config in `ui/ce` creates a reverse proxy for `/services/` which points to the deployed services layer via the environment variable `SERVICES_URL`. It also creates a reverse proxy to the Cloud Object Storage under `/downloads/` the URL for which is defined by the environment variable `COS_DOWNLOAD`
 
-The config creates a reverse proxy for `/services/` which points to the deployed IBM Function via the environment variable `SERVICES_URL`. It also creates a reverse proxy to the Cloud Object Storage under `/downloads/` the URL for which is defined by the environment variable `COS_DOWNLOAD`
+Build the image with either docker or podman and push it to the registry.
 
-### Services layer
+```sh
+podman build -t sbw2csv-ui . #Red Hat or Fedora
+podman tag localhost/sbw2csv-ui:latest us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
+podman push us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
+# or
+docker build -t sbw2csv-ui .
+docker tag localhost/sbw2csv-ui:latest us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
+docker push us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
+```
+
+Roll out new version
+
+```sh
+ibmcloud ce app update --name sbw2csv
+```
+
+#### Set UI Environment variables
+
+```sh
+ibmcloud ce app update --name YOUR_UI_APP \
+  --env SERVICES_URL=https://YOUR-SERVICES-ENDPOINT/ \
+  --env COS_DOWNLOAD=YOUR-COS-INSTANCE-PUBLIC-ENDPOINT
+```
+
+### Deploying the Services layer
 
 You can find the code for this in the [services](services) directory. I bootstrapped this layer with `express --view=pug services` and then customized it for this app. The most important endpoint is [services/routes/convert.js](services/routes/convert.js) which receives uploaded files, converts them to CSV, and then stores them in the COS.
 
 The only other interesting endpoint is in [services/routes/analytics.js](services/routes/analytics.js) which accepts analytic posts from the UI. It takes that data and stores it in a connected cloudant db. This is a experiment at this point and not really relevant to this solution. If you want real analytics you should look elsewhere.
 
-### C++ Command line utility
+Build the image with either `docker` or `podman` and push it to the registry.
 
-The `convert` endpoint uses this utility to do its work. The code from the gbonds application already had an import for SBW files so those dependencies are in the `cli/deps/gbonds-2.0.3/` directory. I added a little glue around that in `cli/main.cpp` to export the files to CSV format.
+```sh
+podman build -t sbw2csv-services . #Red Hat or Fedora
+podman tag localhost/sbw2csv-services:latest us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
+podman push us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
+# or
+docker build -t sbw2csv-services .
+docker tag localhost/sbw2csv-services:latest us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
+docker push us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
+```
 
-Then the only trick is to compile it so that it is compatible with the stack running the action (`cflinuxfs3`). For that I use the Docker file in th `cli` directory.
+Roll out new version
+
+```sh
+ibmcloud ce app update --name sbw2csv-services
+```
+
+#### Services Environment
+
+The services layer expects to be connected to a COS instance and to a Cloudant instance (for the analytics). Use your
+cloud account to bind these services to the Code Engine app.
+
+```sh
+ibmcloud ce app bind --name sbw2csv-services --service-instance YOUR-COS-INSTANCE
+ibmcloud ce app bind --name sbw2csv-services --service-instance YOUR-CLOUDANT-INSTANCE
+ibmcloud ce app update --name sbw2csv-services \
+  --env COS_ENDPOINT=s3.private.YOUR-END-POINT \
+  --env COS_BUCKET=sbw2csv \
+  --env NODE_DB_PREFIX=prod_ \
+  --env DEBUG="services:server services:cos services:convert"
+```
+
+The services layer uses the parameter `COS_ENDPOINT` to find the COS endpoint so make sure that it defined correctly for your environment. You can see in the manifest file that it defaults to the private endpoint for us-east so the private endpoint for your region should work for you.
+
+The services layer also uses the parameter `COS_BUCKET` to find the bucket in the COS. Define this for your environment and be sure to create the bucket in your environment. The code does not attempt to create the bucket. It expects it to already exist.
+
+When you create the bucket be sure to set the expiration rule to automatically remove objects.
+
+![remove file](docs/cos-expire-rule.jpg)
+
+#### C++ Command line utility
+
+The `convert` endpoint uses this utility to do its work. The code from the gbonds application already had an import for SBW files so those dependencies are in the `services/cli/deps/gbonds-2.0.3/` directory. I added a little glue around that in `services/cli/main.cpp` to export the files to CSV format.
+
+Then the only trick is to compile it so that it is compatible with the stack running the in Code Engine. The `servces/Dokerfile` handles that by using the latest CentOS image in the build phase.
 
 Incidentally, you can build the command line utility locally like this:
 
 **Build**
 
 ```sh
-cd cli
+cd services/cli
 cmake -S . -Bbuild
 cmake --build build/
 ```
 
-That works great for me on Ubuntu 20 but likely needs updates for OSX and Windows. LMK if you make changes and I'll merge them in.
-
-### Deploying the Services
-
-You can see most of this in the [build.sh](build.sh) but these are basic steps:
-
-```sh
-docker run --rm -v $(pwd):/app/sbwcli sbw2csv-builder:latest
-cp webbuild/sbw2csv ../services/bin
-# ..
-zip -r app.zip .
-ibmcloud functions deploy
-```
-
-The function expects to be connected to a COS instance and to a Cloudant instance (for the analytics). Use your
-cloud account to generate write access keys for these services and then connect them to the Actions.
-
-```sh
-ibmcloud functions service bind cloud-object-storage \
-    sbw2csv/sbw2csvServices \
-    --instance YOUR-COS-INSTANCE \
-    --keyname sbw2csv-service
-
-
-ibmcloud functions service bind cloudantnosqldb \
-    sbw2csv/sbw2csvServices \
-    --instance YOUR-CLOUDANT-INSTANCE \
-    --keyname sbw2csv-service
-```
-
-The action uses the parameter `COS_ENDPOINT` to find the COS endpoint so make sure that it defined correctly for your environment. You can see in the manifest file that it defaults to the private endpoint for us-east so the private endpoint for your region should work for you.
-
-The action also uses the parameter `COS_BUCKET` to find the bucket in the COS. Define this for your environment and be sure to create the bucket in your environment. The code does not attempt to create the bucket. It expects it to already exist.
-
-When you create the bucket be sure to set the expiration rule to automatically remove objects.
-
-![remove file](docs/cos-expire-rule.jpg)
+That works great for me on Ubuntu 20 and Fedora 35 but likely needs updates for OSX and Windows. LMK if you make changes and I'll merge them in.
 
 ### Local db
 
@@ -122,85 +149,21 @@ This will automatically create and run local couchdb image that the services lay
   ffmpeg -y -i Howitsmade.mpeg -i palette.png  -filter_complex "[0:v][1:v] paletteuse" Howitsmade.gif
   ```
 
-### Build
-
-There is a local build script that prepares everything for deployment. You can find that in [build.sh](build.sh).
-
-That script builds the services, cli, and UI and prepares them for deployment. The build output is written to `build`.
-
-Make sure you have the docker image for running the CLI build.
-
-```sh
-cd cli
-docker build . -t sbw2csv-builder:latest
-```
-
-```sh
-./build.sh
-```
-
 #### Deployment notes
 
 Make sure you are fully targeted including the resource group
 
 ```sh
+ibmcloud ce project select -n YOUR_PROJECT
 ibmcloud target
 ```
 
 ```
 API endpoint: https://cloud.ibm.com
-Region: us-east
+Region: us-south
 User: example@example.com
 Account: aaa
 Resource group: ggg
-CF API endpoint: https://api.us-east.cf.cloud.ibm.com (API version: 2.167.0)
-Org: ooo
-Space: sss
-
-```
-
-#### Deploy action
-
-```sh
-cd build/action
-ibmcloud functions deploy
-```
-
-#### List service credentials
-
-```sh
-ibmcloud resource service-instances
-```
-
-#### Add service credentials
-
-```sh
-ibmcloud functions service bind cloud-object-storage sbw2csv/sbw2csvServices --instance YOUR-COS-INSTANCE --keyname sbw2csv-service
-
-
-ibmcloud functions service bind cloudantnosqldb sbw2csv/sbw2csvServices --instance YOUR-CLOUDANT-INSTANCE --keyname sbw2csv-service
-
-ibmcloud ce app bind --name sbw2csv-services --service-instance YOUR-COS-INSTANCE
-ibmcloud ce app bind --name sbw2csv-services --service-instance YOUR-CLOUDANT-INSTANCE
-ibmcloud ce app update --name sbw2csv-services \
-  --env COS_ENDPOINT=s3.private.YOUR-END-POINT \
-  --env COS_BUCKET=sbw2csv \
-  --env NODE_DB_PREFIX=prod_ \
-  --env DEBUG="services:server services:cos services:convert" \
-```
-
-#### Deploy UI
-
-```sh
-cd build/cf
-ibmcloud cf push --no-start
-ibmcloud cf set-env sbw2csv COS_DOWNLOAD YOUR-PUBLIC-DOWNLOAD-URL
-ibmcloud cf set-env sbw2csv SERVICES_URL YOUR-ACTION-URL
-ibmcloud cf start sbw2csv
-
-ibmcloud ce app update --name sbw2csv-ui \
-  --env SERVICES_URL=https://YOUR-SERVICES-ENDPOINT:3000 \
-  --env COS_DOWNLOAD=YOUR-COS-INSTANCE-PUBLIC-ENDPOINT
 ```
 
 ## Development setup
@@ -209,16 +172,19 @@ pre-reqs
 
 - [yarn](https://classic.yarnpkg.com/en/docs/install/)
 - [nvm](https://github.com/nvm-sh/nvm)
-- node 12 `nvm install 12`
+- node 14 `nvm install 14`
 - [docker](https://docs.docker.com/get-docker/)
   - podman on Fedora or RedHat works too
 - [cmake](https://cmake.org/install/)
 - [gcc](https://linuxize.com/post/how-to-install-gcc-on-ubuntu-20-04/)
 - [boost](https://www.boost.org/doc/libs/1_77_0/more/getting_started/unix-variants.html)
-  ** Fedora**
+
+  **Fedora**
+
   ```sh
   sudo dnf install cmake boost-static boost-devel glib-devel libstdc++-devel libstdc++-static
   ```
+
 - start database - open a new terminal
 
   ```sh
@@ -230,10 +196,9 @@ pre-reqs
 - build the sbw2csv cli
 
   ```sh
-  cd cli
+  cd services/cli
   cmake -S . -Bbuild/
   cmake --build build/
-  cp build/sbw2csv ../services/bin/
   ```
 
 - start services - open a new terminal
@@ -244,7 +209,7 @@ pre-reqs
   yarn serve
   ```
 
-  **NOTE**: If you want your local environment to connect to a remote COS, add your \_\_bx_creds to a `.env.json` file and restart your services.
+  **NOTE**: If you want your local environment to connect to a remote COS, add your CE_SERVICES value found in the runtime environment variables to a `.env.local.json` file and restart your services.
 
 - start UI - open a new terminal
   ```sh

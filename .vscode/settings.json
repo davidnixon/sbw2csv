@@ -75,6 +75,7 @@
     "CLOUDANT",
     "cloudantnosqldb",
     "cmake",
+    "codeengine",
     "creds",
     "deps",
     "devel",
