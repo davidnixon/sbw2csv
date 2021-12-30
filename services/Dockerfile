@@ -18,8 +18,9 @@ RUN mkdir -p /.npm-global/bin/ && \
     mkdir -p /opt/app-root/src/routes/converted && \
     chmod 777 /opt/app-root/src/routes/uploads && \
     chmod 777 /opt/app-root/src/routes/converted && \
-    yarn install && \
+    yarn install --production && \
     chown -R 1024:0 /opt/app-root/src
 USER 1024
 ENV PORT=8080
+ENV NODE_ENV=production
 ENTRYPOINT yarn start
