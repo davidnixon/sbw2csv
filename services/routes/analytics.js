@@ -1,12 +1,12 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const cloudDB = require("../lib/database.js");
-const { v4: uuidv4 } = require("uuid");
-const debug = require("debug")("services:analytics");
+const cloudDB = require('../lib/database.js');
+const {v4: uuidv4} = require('uuid');
+const debug = require('debug')('services:analytics');
 
-router.post("/", function (req, res) {
+router.post('/', (req, res) => {
   const doc = req.body;
-  debug("received", doc);
+  debug('received', doc);
   const cdoc = {
     _id: `analytics:${uuidv4()}`,
     ...doc,
@@ -18,10 +18,11 @@ router.post("/", function (req, res) {
       document: cdoc,
     })
     .then((response) => {
-      return res.status(200).send({ ok: true });
+      response;
+      return res.status(200).send({ok: true});
     })
     .catch((err) => {
-      return res.status(500).send({ ok: false, err: err });
+      return res.status(500).send({ok: false, err: err});
     });
 });
 

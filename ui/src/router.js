@@ -8,14 +8,12 @@ export default new Router({
     {
       path: '/',
       name: 'welcome-page',
-      component: () =>
-        import(/* webpackChunkName: "welcome-page" */ './views/LandingPage'),
+      component: () => import(/* webpackChunkName: "welcome-page" */ './views/LandingPage'),
     },
     {
       path: '/privacy',
       name: 'privacy-page',
-      component: () =>
-        import(/* webpackChunkName: "privacy-page" */ './views/Privacy'),
+      component: () => import(/* webpackChunkName: "privacy-page" */ './views/Privacy'),
     },
   ],
 });

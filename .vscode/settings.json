@@ -71,6 +71,7 @@
     "Bbuild",
     "BOOSTPO",
     "buildpack",
+    "cdoc",
     "cflinuxfs",
     "CLOUDANT",
     "cloudantnosqldb",

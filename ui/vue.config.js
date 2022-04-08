@@ -4,7 +4,7 @@ module.exports = {
       '/services': {
         target: 'http://localhost:3000',
         xfwd: true,
-        pathRewrite: { '^/services/': '' },
+        pathRewrite: {'^/services/': ''},
         autoRewrite: true,
         hostRewrite: true,
       },

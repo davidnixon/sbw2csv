@@ -14,7 +14,8 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "serve": "nodemon ./bin/www"
+    "serve": "nodemon ./bin/www",
+    "lint": "eslint --fix app.js lib/**/*.js routes/**/*.js"
   },
   "dependencies": {
     "@ibm-cloud/cloudant": "^0.0.22",
@@ -23,6 +24,7 @@
     "dotenv-flow": "^3.2.0",
     "express": "~4.17.1",
     "http-errors": "~1.8.0",
+    "ibm-cloud-sdk-core": "^2.17.13",
     "ibm-cos-sdk": "^1.10.2",
     "morgan": "~1.10.0",
     "multer": "^1.4.3",
@@ -31,6 +33,34 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "eslint": "^8.12.0",
+    "eslint-config-ibm": "^1.15.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.0.0",
     "nodemon": "^2.0.12"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "printWidth": 100,
+    "bracketSpacing": false,
+    "trailingComma": "all"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": false,
+      "commonjs": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:node/recommended",
+      "ibm"
+    ],
+    "parserOptions": {
+      "ecmaVersion": "latest"
+    },
+    "rules": {}
   }
 }

@@ -11,7 +11,8 @@
     "format:diff": "prettier --list-different \"src/**/*.{js,vue,scss}\"",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
-    "deploy": "vue-cli-service build && ibmcloud cf push"
+    "deploy": "vue-cli-service build && ibmcloud cf push",
+    "eslint": "eslint --fix src/"
   },
   "engines": {
     "node": "16",
@@ -40,6 +41,7 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^27.1.1",
     "eslint": "^7.32.0",
+    "eslint-config-ibm": "^1.15.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^7.17.0",
     "node-sass": "^6.0.1",
@@ -48,7 +50,11 @@
     "vue-template-compiler": "^2.6.14"
   },
   "prettier": {
-    "singleQuote": true
+    "semi": true,
+    "singleQuote": true,
+    "printWidth": 100,
+    "bracketSpacing": false,
+    "trailingComma": "all"
   },
   "eslintConfig": {
     "root": true,
@@ -57,6 +63,7 @@
     },
     "extends": [
       "plugin:vue/essential",
+      "ibm",
       "@vue/prettier"
     ],
     "rules": {},

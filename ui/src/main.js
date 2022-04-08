@@ -6,7 +6,7 @@ Vue.use(CarbonComponentsVue);
 
 Vue.config.productionTip = false;
 
-var store = {
+const store = {
   state: {
     debug: false, // show user debug information
 

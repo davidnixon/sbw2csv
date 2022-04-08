@@ -8,31 +8,24 @@
     <cv-row>
       <cv-column :sm="4" :md="8" :lg="6">
         <div class="explain">
-          Years ago, your parents or grandparents may have purchased US Savings
-          Bonds from
-          <cv-link
-            href="https://www.treasurydirect.gov/"
-            target="_blank"
-            :inline="true"
+          Years ago, your parents or grandparents may have purchased US Savings Bonds from
+          <cv-link href="https://www.treasurydirect.gov/" target="_blank" :inline="true"
             >Treasury Direct</cv-link
           >
-          , a website sponsored by the US Treasury Department. The site had a
-          Savings Bond Wizard that let you track and identify the purchased
-          bonds. But the SBW file is no longer supported and you may now have a
-          file that’s unreadable – and you suspect the bonds are due or coming
-          due.
+          , a website sponsored by the US Treasury Department. The site had a Savings Bond Wizard
+          that let you track and identify the purchased bonds. But the SBW file is no longer
+          supported and you may now have a file that’s unreadable – and you suspect the bonds are
+          due or coming due.
         </div>
         <div class="explain">
-          I’ve built a small program to convert that SBW file into an Excel file
-          format, or any other spreadsheet. Just upload the file in the box, hit
-          upload, and the file will automatically convert.
+          I’ve built a small program to convert that SBW file into an Excel file format, or any
+          other spreadsheet. Just upload the file in the box, hit upload, and the file will
+          automatically convert.
         </div>
         <div class="explain">
-          Please know that the files will be deleted when the conversion is
-          complete. You can view our privacy policy
-          <cv-link :to="{ name: 'privacy-page' }" :inline="true">
-            here.
-          </cv-link>
+          Please know that the files will be deleted when the conversion is complete. You can view
+          our privacy policy
+          <cv-link :to="{name: 'privacy-page'}" :inline="true"> here. </cv-link>
         </div>
       </cv-column>
       <cv-column :sm="4" :md="8" :lg="6">
@@ -87,14 +80,14 @@
 </template>
 
 <script>
-import { Upload32, Csv20, Download16 } from '@carbon/icons-vue';
+import {Upload32, Csv20, Download16} from '@carbon/icons-vue';
 import agent from 'superagent';
-import { v4 } from 'uuid';
+import {v4} from 'uuid';
 import analytics from '@/api/analytics';
 
 export default {
   name: 'LandingPage',
-  components: { Csv: Csv20, Download16 },
+  components: {Csv: Csv20, Download16},
   data: () => ({
     label: 'Choose sbw files to upload',
     helperText: 'Select the Savings Bond Wizard files you want to upload',
@@ -119,8 +112,7 @@ export default {
     invalidTotalSize: 'These files are too big. Remove some before uploading',
   }),
   created() {
-    if (process.env.NODE_ENV !== 'production')
-      this.downloadPrefix = '/services/';
+    if (process.env.NODE_ENV !== 'production') this.downloadPrefix = '/services/';
     this.browserId = sessionStorage.getItem('browserId');
     if (!this.browserId) {
       this.browserId = v4();
@@ -132,13 +124,13 @@ export default {
         data: this.$route.name,
         browserId: this.browserId,
       },
-      navigator
+      navigator,
     );
   },
   computed: {
     disabledUpload() {
-      var ready = this.sbwFiles.find((item) => item.state == '');
-      var tooBig = this.currentSize > this.maxSize;
+      const ready = this.sbwFiles.find((item) => item.state == '');
+      const tooBig = this.currentSize > this.maxSize;
       return tooBig || !ready;
     },
   },
@@ -148,12 +140,12 @@ export default {
       analytics.add(
         {
           name: 'file-added',
-          data: { size: val.slice(-1)[0].file.size },
+          data: {size: val.slice(-1)[0].file.size},
           browserId: this.browserId,
         },
-        navigator
+        navigator,
       );
-      var done = this.sbwFiles.findIndex((item) => item.state != '');
+      let done = this.sbwFiles.findIndex((item) => item.state != '');
       while (done > -1) {
         this.sbwFiles.splice(done, 1);
         done = this.sbwFiles.findIndex((item) => item.state != '');
@@ -170,15 +162,15 @@ export default {
       analytics.add(
         {
           name: 'upload',
-          data: { count: this.sbwFiles.length },
+          data: {count: this.sbwFiles.length},
           browserId: this.browserId,
         },
-        navigator
+        navigator,
       );
 
       this.downloadLink = '';
 
-      var convert = agent.post('/services/convert');
+      const convert = agent.post('/services/convert');
       this.sbwFiles.forEach((element) => {
         if (element.state == '') {
           element.state = 'uploading';
