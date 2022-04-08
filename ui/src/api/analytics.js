@@ -3,7 +3,7 @@ import lodash from 'lodash';
 
 export default {
   add(event, navigator) {
-    var nav = lodash.pick(navigator, [
+    const nav = lodash.pick(navigator, [
       'deviceMemory',
       'hardwareConcurrency',
       'language',
@@ -14,7 +14,7 @@ export default {
     ]);
     agent
       .post('/services/analytics')
-      .send({ browser: nav, event: { ...event, time: Date.now() } })
+      .send({browser: nav, event: {...event, time: Date.now()}})
       .then(() => {
         // console.log('analytics');
       })
