@@ -1,4 +1,13 @@
 module.exports = {
+  css: {
+    loaderOptions: {
+      scss: {
+        sassOptions: {
+          quietDeps: true,
+        },
+      },
+    },
+  },
   devServer: {
     proxy: {
       '/services': {

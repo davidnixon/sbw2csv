@@ -6,9 +6,7 @@
         <p>
           Your privacy is important to us. It is SBW2CSV&#39;s policy to respect your privacy and
           comply with any applicable law and regulation regarding any personal information we may
-          collect about you, including across our website,
-          <a href="https://sbw2csv.mybluemix.net/">https://sbw2csv.mybluemix.net/</a>, and other
-          sites we own and operate.
+          collect about you, including across our website, and other sites we own and operate.
         </p>
         <p>This policy is effective as of 13 August 2021 and was last updated on 13 August 2021.</p>
         <h3>Information We Collect</h3>
