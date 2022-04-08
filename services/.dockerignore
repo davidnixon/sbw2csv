@@ -1,0 +1,13 @@
+cli/build
+routes/converted/
+routes/uploads/
+node_modules
+.gitignore
+manifest.yaml
+action.js
+Dockerfile
+.env.local*
+README.md
+.npm
+.dockerignore
+env

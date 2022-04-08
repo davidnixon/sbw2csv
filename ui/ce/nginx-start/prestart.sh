@@ -1,0 +1,1 @@
+envsubst '$COS_DOWNLOAD $CE_SUBDOMAIN' < /opt/app-root/etc/templates/proxies.conf > "${NGINX_DEFAULT_CONF_PATH}/proxies.conf"

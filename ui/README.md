@@ -1,6 +1,6 @@
 ## SBW website
 
-Convert SBW (Savings Bond Wizard) files to CSV format so they can be opened in your favorite speadsheet program including LibreOffice Calc and Excel.
+Convert SBW (Savings Bond Wizard) files to CSV format so they can be opened in your favorite spreadsheet program including LibreOffice Calc and Excel.
 
 ## Available Scripts
 

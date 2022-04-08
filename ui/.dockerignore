@@ -1,0 +1,6 @@
+node_modules
+.gitignore
+manifest.yaml
+action.js
+Dockerfile
+README.md

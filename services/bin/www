@@ -4,19 +4,26 @@
  * Module dependencies.
  */
 require("dotenv-flow").config();
+const debug = require("debug")("services:server");
+const path = require("path");
+const fs = require("fs");
+
+// local dev helper
 if (process.env.NODE_ENV !== "production") {
-  const fs = require("fs");
-  if (fs.existsSync(__dirname + "/../.env.json")) {
-    const env_json = require("../.env.json");
-    for (const [key, value] of Object.entries(env_json)) {
-      if (typeof value != "string") process.env[key] = JSON.stringify(value);
-      else process.env[key] = value;
-    }
+  const envLocalJson = path.join(__dirname, "../.env.local.json");
+  try {
+    const ceEnv = fs.readFileSync(envLocalJson).toString("utf-8");
+    if (ceEnv) {
+      process.env.CE_SERVICES = ceEnv;
+      debug(`process.env.CE_SERVICES defined`);
+    } else debug(`process.env.CE_SERVICES NOT defined`);
+  } catch (error) {
+    debug(`${envLocalJson} not found`, error);
   }
 }
-var app = require("../app");
-var debug = require("debug")("services:server");
-var http = require("http");
+
+const http = require("http");
+const app = require("../app");
 
 /**
  * Get port from environment and store in Express.

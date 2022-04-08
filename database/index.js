@@ -1,18 +1,29 @@
 var package = require('./package.json')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
+const execSync = require('child_process').execSync
+const path = require('path')
+
+var command
+try {
+  command = execSync('command -v podman').toString('ascii').trim()
+} catch (error) {
+  command = execSync('command -v docker').toString('ascii').trim()
+}
+var bCommand = path.basename(command)
+console.log('command', command)
 
 // Is the correct version already running
-exec('docker ps --quiet --filter label=sbw2csv-dev/db=' + package.version)
+exec(`${command} ps --quiet --filter label=sbw2csv-dev/db=${package.version}`)
   .then((data) => {
     if (data.stdout === '') {
       // Its not running so let's check to see if the right version of the db is available locally
-      return exec('docker images --quiet sbw2csv-dev/db:' + package.version)
+      return exec(`${command} images --quiet sbw2csv-dev/db:${package.version}`)
     } else {
       console.log(
         `correct version sbw2csv-dev/db:${
           package.version
-        } is running.\nIf you want to restart this image, first use 'docker stop ${data.stdout.trim()}'\n`
+        } is running.\nIf you want to restart this image, first use '${bCommand} stop ${data.stdout.trim()}'\n`
       )
       return { running: true, ...data }
     }

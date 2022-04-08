@@ -11,7 +11,7 @@ const Shred = require("node-shred");
 const cos = require("../lib/cos.js");
 
 const upload = multer({ dest: path.join(__dirname, "uploads") });
-const sbw2csv_cli = path.join(__dirname, "..", "bin", "sbw2csv");
+const sbw2csv_cli = path.join(__dirname, "..", "cli", "build", "sbw2csv");
 info("cli", sbw2csv_cli);
 const converted = path.join(__dirname, "converted");
 info("converted dir", converted);

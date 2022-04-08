@@ -8,7 +8,7 @@ node_modules
 ui/bin/
 ui/services/
 expressjs-openwhisk/
-.env.local
+.env.local*
 *.csv
 *.sbw
 *.xlsx
