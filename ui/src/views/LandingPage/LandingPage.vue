@@ -76,18 +76,29 @@
         </div>
       </cv-column>
     </cv-row>
+    <cv-row>
+      <cv-column>
+        <LogoGithub32 />
+        <div class="sbw2csv__git">
+          See the source code for this app in
+          <cv-link href="https://github.com/davidnixon/sbw2csv" :inline="true" target="_blank">
+            GitHub
+          </cv-link>
+        </div>
+      </cv-column>
+    </cv-row>
   </cv-grid>
 </template>
 
 <script>
-import {Upload32, Csv20, Download16} from '@carbon/icons-vue';
+import {Upload32, Csv20, Download16, LogoGithub32} from '@carbon/icons-vue';
 import agent from 'superagent';
 import {v4} from 'uuid';
 import analytics from '@/api/analytics';
 
 export default {
   name: 'LandingPage',
-  components: {Csv: Csv20, Download16},
+  components: {Csv: Csv20, Download16, LogoGithub32},
   data: () => ({
     label: 'Choose sbw files to upload',
     helperText: 'Select the Savings Bond Wizard files you want to upload',
@@ -199,6 +210,8 @@ export default {
 
 <style lang="scss">
 @import '@/styles/theme';
+@import 'carbon-components/scss/components/link/link';
+
 @keyframes slideIn {
   from {
     transform: translateX(-100%) scale(4.5);
@@ -219,6 +232,13 @@ export default {
       line-height: 24px;
       margin-left: 0.5rem;
     }
+  }
+  &__git {
+    display: inline-block;
+    height: 32px;
+    vertical-align: text-bottom;
+    padding-top: 4px;
+    padding-left: 4px;
   }
 }
 
