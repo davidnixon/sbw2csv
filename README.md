@@ -30,7 +30,7 @@ You can find the code for this in the [ui](ui) directory.
 
 Deployment of the UI is straightforward with just a bit of a reverse proxy incantation to to hide the services and cloud object storage layers. The config in `ui/ce` creates a reverse proxy for `/services/` which points to the deployed services layer which is automatically calculated from the environment variable `CE_SUBDOMAIN`. It also creates a reverse proxy to the Cloud Object Storage under `/downloads/` the URL for which is defined by the environment variable `COS_DOWNLOAD`
 
-Build the image with either docker or podman and push it to the registry. Make sure each image has both the `latest` tag and another tag. I have a automatic retention policy set on my registry but that policy will not prune untagged images. Setting the another tag on the image when you push it allows it to be pruned later.
+Build the image with either docker or podman and push it to the registry. Make sure each image has both the `latest` tag and another tag. I have a automatic retention policy set on my registry but that policy will not prune untagged images. Setting another tag on the image when you push it allows it to be pruned later.
 
 - [Install the code engine command line](https://cloud.ibm.com/docs/codeengine?topic=codeengine-cli)
 
@@ -46,6 +46,9 @@ podman build -t sbw2csv-ui . #Red Hat or Fedora
 podman tag localhost/sbw2csv-ui:latest us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
 podman push us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
 podman push us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest us.icr.io/sbw2csv/codeengine-sbw2csv-ui:$(date '+%FT%H%M%S')
+```
+
+```sh
 # or
 docker build -t sbw2csv-ui .
 docker tag localhost/sbw2csv-ui:latest us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
@@ -79,13 +82,16 @@ You can find the code for this in the [services](services) directory. I bootstra
 
 The only other interesting endpoint is in [services/routes/analytics.js](services/routes/analytics.js) which accepts analytic posts from the UI. It takes that data and stores it in a connected cloudant db. This is a experiment at this point and not really relevant to this solution. If you want real analytics you should look elsewhere.
 
-Build the image with either `docker` or `podman` and push it to the registry. Make sure each image has both the `latest` tag and another tag. I have a automatic retention policy set on my registry but that policy will not prune untagged images. Setting the another tag on the image when you push it allows it to be pruned later.
+Build the image with either `docker` or `podman` and push it to the registry. Make sure each image has both the `latest` tag and another tag. 
 
 ```sh
 podman build -t sbw2csv-services . #Red Hat or Fedora
 podman tag localhost/sbw2csv-services:latest us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
 podman push us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
 podman push us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest us.icr.io/sbw2csv/codeengine-sbw2csv-services:$(date '+%FT%H%M%S')
+```
+
+```sh
 # or
 docker build -t sbw2csv-services .
 docker tag localhost/sbw2csv-services:latest us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
@@ -203,7 +209,7 @@ pre-reqs
 
 - [yarn](https://classic.yarnpkg.com/en/docs/install/)
 - [nvm](https://github.com/nvm-sh/nvm)
-- node 14 `nvm install 14`
+- node 16 `nvm install 16`
 - [docker](https://docs.docker.com/get-docker/)
   - podman on Fedora or RedHat works too
 - [cmake](https://cmake.org/install/)
