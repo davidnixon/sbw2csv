@@ -28,7 +28,7 @@ yarn serve
 
 You can find the code for this in the [ui](ui) directory.
 
-Deployment of the UI is straightforward with just a bit of a reverse proxy incantation to to hide the services and cloud object storage layers. The config in `ui/ce` creates a reverse proxy for `/services/` which points to the deployed services layer via the environment variable `SERVICES_URL`. It also creates a reverse proxy to the Cloud Object Storage under `/downloads/` the URL for which is defined by the environment variable `COS_DOWNLOAD`
+Deployment of the UI is straightforward with just a bit of a reverse proxy incantation to to hide the services and cloud object storage layers. The config in `ui/ce` creates a reverse proxy for `/services/` which points to the deployed services layer which is automatically calculated from the environment variable `CE_SUBDOMAIN`. It also creates a reverse proxy to the Cloud Object Storage under `/downloads/` the URL for which is defined by the environment variable `COS_DOWNLOAD`
 
 Build the image with either docker or podman and push it to the registry. Make sure each image has both the `latest` tag and another tag. I have a automatic retention policy set on my registry but that policy will not prune untagged images. Setting the another tag on the image when you push it allows it to be pruned later.
 
