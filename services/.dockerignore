@@ -6,3 +6,8 @@ node_modules
 manifest.yaml
 action.js
 Dockerfile
+.env.local*
+README.md
+.npm
+.dockerignore
+env

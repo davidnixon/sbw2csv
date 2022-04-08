@@ -1,11 +1,12 @@
 FROM docker.io/centos:centos8
-RUN dnf install -y cmake  boost-devel libstdc++-devel gcc-c++ glib2-devel
+RUN dnf --disablerepo '*' --enablerepo=extras swap centos-linux-repos centos-stream-repos -y && \
+    dnf install -y cmake  boost-devel libstdc++-devel gcc-c++ glib2-devel
 COPY cli/ /home/cli/
 WORKDIR /home/cli/
 RUN cmake -DBOOSTPO=/usr/lib64/libboost_program_options.so -Bbuild . && \
     cmake --build build/
 
-FROM registry.access.redhat.com/ubi8/nodejs-14-minimal
+FROM registry.access.redhat.com/ubi8/nodejs-16-minimal
 USER root
 COPY --from=0 /usr/lib64/libboost* /usr/lib64/
 COPY --from=0 /home/cli/build/sbw2csv /opt/app-root/src/cli/build/sbw2csv

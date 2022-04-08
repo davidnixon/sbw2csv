@@ -30,16 +30,27 @@ You can find the code for this in the [ui](ui) directory.
 
 Deployment of the UI is straightforward with just a bit of a reverse proxy incantation to to hide the services and cloud object storage layers. The config in `ui/ce` creates a reverse proxy for `/services/` which points to the deployed services layer via the environment variable `SERVICES_URL`. It also creates a reverse proxy to the Cloud Object Storage under `/downloads/` the URL for which is defined by the environment variable `COS_DOWNLOAD`
 
-Build the image with either docker or podman and push it to the registry.
+Build the image with either docker or podman and push it to the registry. Make sure each image has both the `latest` tag and another tag. I have a automatic retention policy set on my registry but that policy will not prune untagged images. Setting the another tag on the image when you push it allows it to be pruned later.
+
+- [Install the code engine command line](https://cloud.ibm.com/docs/codeengine?topic=codeengine-cli)
+
+- Login and target the project
+
+  ```sh
+  ibmcloud login --apikey @~/projects/ibmcloud-apikey.json -g Default -r us-south
+  ibmcloud ce project select --name sbw2csv
+  ```
 
 ```sh
 podman build -t sbw2csv-ui . #Red Hat or Fedora
 podman tag localhost/sbw2csv-ui:latest us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
 podman push us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
+podman push us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest us.icr.io/sbw2csv/codeengine-sbw2csv-ui:$(date '+%FT%H%M%S')
 # or
 docker build -t sbw2csv-ui .
 docker tag localhost/sbw2csv-ui:latest us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
 docker push us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest
+docker push us.icr.io/sbw2csv/codeengine-sbw2csv-ui:latest us.icr.io/sbw2csv/codeengine-sbw2csv-ui:$(date '+%FT%H%M%S')
 ```
 
 Roll out new version
@@ -48,11 +59,17 @@ Roll out new version
 ibmcloud ce app update --name sbw2csv
 ```
 
+Show the latest logs
+
+```sh
+ibmcloud ce app logs -f -n sbw2csv
+```
+
 #### Set UI Environment variables
 
 ```sh
-ibmcloud ce app update --name YOUR_UI_APP \
-  --env SERVICES_URL=https://YOUR-SERVICES-ENDPOINT/ \
+# use your public COS endpoint here i.e. https://s3.us-south.cloud-object-storage.appdomain.cloud/your-bucket/
+ibmcloud ce app update --name sbw2csv \
   --env COS_DOWNLOAD=YOUR-COS-INSTANCE-PUBLIC-ENDPOINT
 ```
 
@@ -62,40 +79,54 @@ You can find the code for this in the [services](services) directory. I bootstra
 
 The only other interesting endpoint is in [services/routes/analytics.js](services/routes/analytics.js) which accepts analytic posts from the UI. It takes that data and stores it in a connected cloudant db. This is a experiment at this point and not really relevant to this solution. If you want real analytics you should look elsewhere.
 
-Build the image with either `docker` or `podman` and push it to the registry.
+Build the image with either `docker` or `podman` and push it to the registry. Make sure each image has both the `latest` tag and another tag. I have a automatic retention policy set on my registry but that policy will not prune untagged images. Setting the another tag on the image when you push it allows it to be pruned later.
 
 ```sh
 podman build -t sbw2csv-services . #Red Hat or Fedora
 podman tag localhost/sbw2csv-services:latest us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
 podman push us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
+podman push us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest us.icr.io/sbw2csv/codeengine-sbw2csv-services:$(date '+%FT%H%M%S')
 # or
 docker build -t sbw2csv-services .
 docker tag localhost/sbw2csv-services:latest us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
 docker push us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest
+docker push us.icr.io/sbw2csv/codeengine-sbw2csv-services:latest us.icr.io/sbw2csv/codeengine-sbw2csv-services:$(date '+%FT%H%M%S')
 ```
 
 Roll out new version
 
 ```sh
-ibmcloud ce app update --name sbw2csv-services
+ibmcloud ce app update --name services
+```
+
+Show the latest logs
+
+```sh
+ibmcloud ce app logs -f -n services
 ```
 
 #### Services Environment
 
 The services layer expects to be connected to a COS instance and to a Cloudant instance (for the analytics). Use your
-cloud account to bind these services to the Code Engine app.
+cloud account to configure these services to the Code Engine app.
 
 ```sh
-ibmcloud ce app bind --name sbw2csv-services --service-instance YOUR-COS-INSTANCE
-ibmcloud ce app bind --name sbw2csv-services --service-instance YOUR-CLOUDANT-INSTANCE
-ibmcloud ce app update --name sbw2csv-services \
+# navigate to your cloud object store instance to create and API key and get your instance id
+ibmcloud ce secret create --name cos-secrets \
+  -l COS_INSTANCE_ID=crn:your-instance-id:: \
+  -l COS_APIKEY=your-api-key
+
+ibmcloud ce app bind --name services --service-instance YOUR-CLOUDANT-INSTANCE
+
+ibmcloud ce app update --name services \
+  --env-from-secret cos-secrets \
   --env COS_ENDPOINT=s3.private.YOUR-END-POINT \
-  --env COS_BUCKET=sbw2csv \
+  --env COS_BUCKET=your-bucket \
   --env NODE_DB_PREFIX=prod_ \
   --env DEBUG="services:server services:cos services:convert"
 ```
 
-The services layer uses the parameter `COS_ENDPOINT` to find the COS endpoint so make sure that it defined correctly for your environment. You can see in the manifest file that it defaults to the private endpoint for us-east so the private endpoint for your region should work for you.
+The services layer uses the parameter `COS_ENDPOINT` to find the COS endpoint so make sure that it defined correctly for your environment. You can see in the manifest file that it defaults to the private endpoint for us-east so the private endpoint for your region should work for you. If the app fails to connect via the private COS end point try the direct endpoint.
 
 The services layer also uses the parameter `COS_BUCKET` to find the bucket in the COS. Define this for your environment and be sure to create the bucket in your environment. The code does not attempt to create the bucket. It expects it to already exist.
 
