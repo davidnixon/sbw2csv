@@ -1,57 +1,43 @@
-name: Form Bug Report
-description: File a bug report
-title: "[Bug]: "
-labels: ["bug", "triage"]
-assignees:
-  - octocat
+name: Submit candidate information
+description: Submit a request to add/update candidate information for US midterm 2022 elections
+title: "[state/contest/candidate]: "
+labels: ["midterm-2022"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Thanks for taking the time to sugest edits to our list of candidates!
+  - type: dropdown
+    id: state
+    attributes:
+      label: State
+      description: Which US state?
+      options:
+        - Alabama
+        - Georgia
   - type: input
-    id: contact
+    id: contest
     attributes:
-      label: Contact Details
-      description: How can we get in touch with you if we need more info?
-      placeholder: ex. email@example.com
-    validations:
-      required: false
-  - type: textarea
-    id: what-happened
-    attributes:
-      label: What happened?
-      description: Also tell us, what did you expect to happen?
-      placeholder: Tell us what you see!
-      value: "A bug happened!"
+      label: Contest
+      description: Which contest is this candidate running for
+      placeholder: Secretary of State
     validations:
       required: true
-  - type: dropdown
-    id: version
+  - type: input
+    id: name
     attributes:
-      label: Version
-      description: What version of our software are you running?
-      options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
+      label: Candidate Name
+      placeholder: Jane Smith
     validations:
       required: true
-  - type: dropdown
-    id: browsers
+  - type: input
+    id: url
     attributes:
-      label: What browsers are you seeing the problem on?
-      multiple: true
-      options:
-        - Firefox
-        - Chrome
-        - Safari
-        - Microsoft Edge
-  - type: textarea
-    id: logs
-    attributes:
-      label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-      render: shell
+      label: Link to information about the candidate.
+      description: An independent link to information. (Should NOT be the candidates web site)
+      placeholder: https://ballotpedia.com/candidate_name
+    validations:
+      required: true
   - type: checkboxes
     id: terms
     attributes:
