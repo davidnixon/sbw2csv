@@ -12,3 +12,4 @@ expressjs-openwhisk/
 *.csv
 *.sbw
 *.xlsx
+.DS_Store
