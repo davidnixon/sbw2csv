@@ -88,7 +88,7 @@ body:
     validations:
       required: true
   - type: input
-    id: url
+    id: facebook
     attributes:
       label: Facebook
       description: A link to the candidate's Facebook page. (not required)
@@ -96,7 +96,7 @@ body:
     validations:
       required: false
   - type: input
-    id: url
+    id: twitter
     attributes:
       label: Twitter
       description: A "blue checkmark" link to the candidate's Twitter page. (not required)
@@ -104,7 +104,7 @@ body:
     validations:
       required: false
   - type: input
-    id: url
+    id: youtube
     attributes:
       label: YouTube
       description: A link to the candidate's official YouTube channel. (not required)
@@ -112,7 +112,7 @@ body:
     validations:
       required: false
   - type: input
-    id: url
+    id: instagram
     attributes:
       label: Instagram
       description: A "blue checkmark" link to the candidate's official Instagram. (not required)
@@ -120,7 +120,7 @@ body:
     validations:
       required: false
   - type: input
-    id: url
+    id: linkedin
     attributes:
       label: LinkedIn
       description: A link to the candidate's official LinkedIn. (not required)
