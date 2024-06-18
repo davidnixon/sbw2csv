@@ -29,7 +29,7 @@
     "morgan": "~1.10.0",
     "multer": "^1.4.3",
     "node-shred": "^1.1.0",
-    "pug": "3.0.2",
+    "pug": "3.0.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
