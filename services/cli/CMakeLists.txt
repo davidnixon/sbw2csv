@@ -7,6 +7,7 @@ include_directories(
     /usr/include/glib-2.0
     /usr/lib/x86_64-linux-gnu/glib-2.0/include
     /usr/lib64/glib-2.0/include/
+    /home/boost/include
 )
 
 add_executable(${PROJECT_NAME} "main.cpp"
@@ -22,6 +23,7 @@ add_executable(${PROJECT_NAME} "main.cpp"
 find_library(BOOSTPO
     libboost_program_options.a
     libboost_program_options.so
+    HINTS: /home/boost/lib /usr/local/lib/ /usr/lib64/
 )
 message(STATUS "using ${BOOSTPO}")
 

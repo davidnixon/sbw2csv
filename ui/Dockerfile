@@ -1,13 +1,13 @@
-FROM registry.access.redhat.com/ubi8/nodejs-16
+FROM registry.access.redhat.com/ubi8/nodejs-16 as builder
 USER root
 COPY . .
 RUN npm install -g yarn &&\
     yarn install &&\
     yarn build
 
-FROM registry.access.redhat.com/ubi8/nginx-120
+FROM registry.access.redhat.com/ubi8/nginx-120 as runner
 USER root
-COPY --from=0 /opt/app-root/src/ce/dist /opt/app-root/src
+COPY --from=builder /opt/app-root/src/ce/dist /opt/app-root/src
 RUN mkdir /opt/app-root/etc/templates
 COPY ce/nginx-default-cfg/*.conf /opt/app-root/etc/templates/
 COPY ce/nginx-start/*.sh /opt/app-root/src/nginx-start/

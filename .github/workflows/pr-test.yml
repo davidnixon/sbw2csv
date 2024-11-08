@@ -1,0 +1,29 @@
+# Deploy cloud - IBM Code Engine
+
+name: Build PR
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Build & deploy
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dirs: [ ui, services ]
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Build docker image
+        working-directory: ${{ matrix.dirs }}
+        run: docker build -t pr-ui:testing .
