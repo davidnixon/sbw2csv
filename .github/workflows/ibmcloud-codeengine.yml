@@ -89,6 +89,7 @@ jobs:
           CE_PROJECT: ${{ vars.CE_PROJECT }}
           CE_APP_NAME: ${{ vars.CE_APP_NAME }}
           CR_IMAGE: ${{ vars.CR_IMAGE }}
+          IMAGE_TAG: ${{ steps.image-tag.outputs.IMAGE_TAG }}
         run: |
           ibmcloud ce project select --name ${CE_PROJECT}
           ibmcloud ce app logs --tail 5 --follow --name ${CE_APP_NAME} &
