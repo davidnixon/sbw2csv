@@ -17,16 +17,13 @@ jobs:
   # Build & deploy
   build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        dirs: [ ui, services ]
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - name: Build docker UI image
-        working-directory: ./ui
+      - name: Build docker image
+        working-directory: ${{ matrix.dirs }}
         run: docker build -t pr-ui:testing .
-
-      - name: Build docker services image
-        working-directory: ./services
-        run: docker build -t pr-services:testing .
-
