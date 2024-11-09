@@ -101,5 +101,5 @@ jobs:
           CR_IMAGE_BE: ${{ vars.CR_IMAGE_BE }}
           IMAGE_TAG: ${{ steps.image-tag.outputs.IMAGE_TAG }}
         run: |
-          echo "### Deployed images\n- UI: ${CR_IMAGE}:$IMAGE_TAG\n- Services: ${CR_IMAGE_BE}:$IMAGE_TAG" >> $GITHUB_STEP_SUMMARY
+          printf "### Deployed images\n- UI: ${CR_IMAGE}:$IMAGE_TAG\n- Services: ${CR_IMAGE_BE}:$IMAGE_TAG\n" >> $GITHUB_STEP_SUMMARY
 
