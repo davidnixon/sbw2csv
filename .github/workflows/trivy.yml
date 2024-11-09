@@ -84,6 +84,8 @@ jobs:
       - name: combine results
         id: results
         run: |
+          ls -la
+          la -la $HOME/.local/bin/trivy-bin/contrib
           cat results-ui.md results-services.md > results.md
           echo "RESULTS=$(<results.md)"  >> "$GITHUB_OUTPUT"
 
