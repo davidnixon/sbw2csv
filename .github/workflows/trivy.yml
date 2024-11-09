@@ -90,4 +90,4 @@ jobs:
       - name: publish
         run: gh --repo davidnixon/vulnerability-dashboard issue edit 1 --body-file results.md
         env:
-         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         GH_TOKEN: ${{ secrets.TRIVY_DASHBOARD_TOKEN }}
