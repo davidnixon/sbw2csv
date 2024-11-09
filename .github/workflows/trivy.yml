@@ -63,20 +63,33 @@ jobs:
           CE_APP_NAME: ${{ vars.CE_APP_NAME_BE }}
         run: echo "IMAGE=$(ibmcloud ce app get --output json --name ${CE_APP_NAME} | jq -r '.spec.template.spec.containers[0].image[8:]')" >> "$GITHUB_OUTPUT"
 
-      - name: Run Trivy vulnerability scanner
+      - name: Vulnerability scan (ui)
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: '${{ steps.ui-image.outputs.IMAGE }}'
           format: 'table'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
+          output: 'results-ui.md'
 
-      - name: Run Trivy vulnerability scanner
+      - name: Vulnerability scan (services)
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: '${{ steps.services-image.outputs.IMAGE }}'
           format: 'table'
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
-          skip-setup-trivy: true
+          output: 'results-services.md'
 
+      - name: combine results
+        id: results
+        run: |
+          cat results-ui.md results-services.md > results.md
+          echo "RESULTS=$(<results.md)"  >> "$GITHUB_OUTPUT"
+
+      - uses: octokit/request-action@v2.x
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          route: PATCH /repos/davidnixon/vulnerability-dashboard/issues/1
+          body: ${{ toJSON(steps.results.outputs.IMAGE) }}
