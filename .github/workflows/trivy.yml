@@ -86,11 +86,8 @@ jobs:
         run: |
           ls -la
           cat results-ui.md results-services.md > results.md
-          echo "RESULTS=$(<results.md)"  >> "$GITHUB_OUTPUT"
 
-      - uses: octokit/request-action@v2.x
+      - name: publish
+        run: gh --repo davidnixon/vulnerability-dashboard issue edit 1 --body-file results.md
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          route: PATCH /repos/davidnixon/vulnerability-dashboard/issues/1
-          body: ${{ toJSON(steps.results.outputs.IMAGE) }}
+         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
