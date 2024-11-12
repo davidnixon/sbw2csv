@@ -63,20 +63,41 @@ jobs:
           CE_APP_NAME: ${{ vars.CE_APP_NAME_BE }}
         run: echo "IMAGE=$(ibmcloud ce app get --output json --name ${CE_APP_NAME} | jq -r '.spec.template.spec.containers[0].image[8:]')" >> "$GITHUB_OUTPUT"
 
-      - name: Run Trivy vulnerability scanner
+      - name: Get trivy markdown template
+        env:
+          GH_TOKEN: ${{ secrets.TRIVY_DASHBOARD_TOKEN }}
+        run: |
+          gh --repo davidnixon/vulnerability-dashboard release download --archive=zip --output=config-files.zip
+          mkdir .trivy
+          unzip config-files.zip -d .trivy
+
+      - name: Vulnerability scan (ui)
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: '${{ steps.ui-image.outputs.IMAGE }}'
-          format: 'table'
+          format: 'template'
+          template: "@.trivy/vulnerability-dashboard-0.0/config/trivy/markdown.tpl"
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
+          output: 'results-ui.md'
 
-      - name: Run Trivy vulnerability scanner
+      - name: Vulnerability scan (services)
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: '${{ steps.services-image.outputs.IMAGE }}'
-          format: 'table'
+          format: 'template'
+          template: "@.trivy/vulnerability-dashboard-0.0/config/trivy/markdown.tpl"
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
-          skip-setup-trivy: true
+          output: 'results-services.md'
 
+      - name: combine results
+        id: results
+        run: |
+          ls -la
+          cat results-ui.md results-services.md > results.md
+
+      - name: publish
+        run: gh --repo davidnixon/vulnerability-dashboard issue edit 1 --body-file results.md
+        env:
+         GH_TOKEN: ${{ secrets.TRIVY_DASHBOARD_TOKEN }}
