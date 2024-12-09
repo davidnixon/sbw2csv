@@ -76,7 +76,7 @@ jobs:
         with:
           image-ref: '${{ steps.ui-image.outputs.IMAGE }}'
           format: 'template'
-          template: "@.trivy/vulnerability-dashboard-0.0/config/trivy/markdown.tpl"
+          template: "@.trivy/vulnerability-dashboard-0.0.1/config/trivy/markdown.tpl"
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
           output: 'results-ui.md'
@@ -86,7 +86,7 @@ jobs:
         with:
           image-ref: '${{ steps.services-image.outputs.IMAGE }}'
           format: 'template'
-          template: "@.trivy/vulnerability-dashboard-0.0/config/trivy/markdown.tpl"
+          template: "@.trivy/vulnerability-dashboard-0.0.1/config/trivy/markdown.tpl"
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
           output: 'results-services.md'
