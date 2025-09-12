@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
             "DATE,MATURITY DATE"
          << endl;
 
-  // Loop trough the input file and conver each one. Try to be tolerant of errors
+  // Loop trough the input file and convert each one. Try to be tolerant of errors
   // or bad files.
   for (auto sbwfile : vm["input"].as<vector<string>>())
   {

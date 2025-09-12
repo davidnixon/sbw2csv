@@ -1,9 +1,0 @@
-{
-  "recommendations": [
-    "ms-vscode.cmake-tools",
-    "ms-vscode-remote.remote-containers",
-    "esbenp.prettier-vscode",
-    "ms-azuretools.vscode-docker",
-    "octref.vetur"
-  ]
-}

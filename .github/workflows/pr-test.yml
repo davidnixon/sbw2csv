@@ -5,9 +5,9 @@ name: Build PR
 # Controls when the action will run.
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
+#  pull_request:
+#    branches:
+#      - main
 
 defaults:
   run:

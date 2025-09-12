@@ -81,11 +81,11 @@ gbDoc *gb_doc_sbw_open(const gchar *filename, gbStatus *status) {
   /* Now import using the proper format. */
   switch (version) {
   case 2:
-    g_message("Importing SBW 2 or 3 file");
+    g_debug("Importing SBW 2 or 3 file");
     doc = read_sbw2(fp, status);
     break;
   case 4:
-    g_message("Importing SBW 4 file");
+    g_debug("Importing SBW 4 file");
     doc = read_sbw4(fp, status);
     break;
   default:

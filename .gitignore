@@ -13,3 +13,8 @@ expressjs-openwhisk/
 *.sbw
 *.xlsx
 .DS_Store
+.idea
+patch.zip
+services/env-for-docker-local-testing
+test.vue
+ui/ce/*.pem
